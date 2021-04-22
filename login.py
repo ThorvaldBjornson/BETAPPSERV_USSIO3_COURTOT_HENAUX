@@ -1,4 +1,29 @@
 from tkinter import *
+import socket
+import json
+
+class donnees:
+    def __init__(self, data):
+        self.__dict__ = json.loads(data)
+
+def connect():
+    User = entry_login.get()
+    password = entry_mdp.get()
+    rq = {
+            "action" : "connection",
+            "login"   : User,
+            "password": password
+        }
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect(('192.168.1.86', 9999))
+    message = json.dumps(rq)
+    message_obj = donnees(message)
+    print(message_obj.action)
+    s.send(message.encode("ascii"))
+    data = s.recv(1024)
+    s.close()
+    print(repr(data), 'Reçue')
+    print(rq)
 
 window = Tk()
 
@@ -31,7 +56,7 @@ label_mdp.pack()
 entry_mdp = Entry(frame, font=("Arial", 20), bg="#87CEFA", fg="white")
 entry_mdp.pack()
 
-log_button = Button(frame, text="Login", font=("Arial", 20), bg="#DCDCDC", fg="white")
+log_button = Button(frame, text="Login", font=("Arial", 20), bg="#DCDCDC", fg="white", command=connect)
 log_button.pack(pady=25, fill=X)
 
 frame.pack(expand=YES)
