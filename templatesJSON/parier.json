@@ -1,0 +1,7 @@
+{
+  "action" : "parier",
+  "utilisateur" : "user1",
+  "rencontre" : "idRencontre",
+  "challenger" : "idChallenger",
+  "mise" : 20
+}

@@ -1,0 +1,5 @@
+{
+    "action" : "connection",
+    "login"   : "user1",
+    "password": "123456"
+}
