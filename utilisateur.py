@@ -1,4 +1,28 @@
 from tkinter import *
+import socket
+import json
+
+class donnees:
+    def __init__(self, data):
+        self.__dict__ = json.loads(data)
+
+def rencontre():
+    rq = {
+        "action": "afficher rencontre",
+    }
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect(('192.168.1.86', 9999))
+    message = json.dumps(rq)
+    message_obj = donnees(message)
+    print(message_obj.action)
+    s.send(message.encode("ascii"))
+    data = s.recv(1024)
+    s.close()
+    print(repr(data), 'Reçue')
+    print(rq)
+    data = donnees(data)
+    return data
+
 
 window = Tk()
 
@@ -32,9 +56,12 @@ label_User = Label(frame, text=User, font=("Arial", 15), bg="#87CEFA", fg="white
 label_User.grid(row=0, column=0, sticky=W)
 
 #feed + affichage des rencontres
-rencontre = ['Rencontre1', 'Rencontre2', 'Rencontre3']
+rencontre = rencontre().rencontre
 for i in range(len(rencontre)):
-    label_Rencontre = Label(frame, text=rencontre[i], font=("Arial", 15), bg="#87CEFA", fg="white")
+    r = donnees(json.dumps(rencontre[i]))
+    values = r.nom + " le " + r.date + " à " + r.lieu
+
+    label_Rencontre = Label(frame, text=values, font=("Arial", 15), bg="#87CEFA", fg="white")
     label_Rencontre.grid(row=i+2, column=0, sticky=W)
     log_button = Button(frame, text="Parier", font=("Arial", 15), bg="white", fg="#87CEFA")
     log_button.grid(row=i+2, column=1)
