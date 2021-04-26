@@ -23,6 +23,45 @@ def rencontre():
     data = donnees(data)
     return data
 
+def historique():
+    User = "1"
+    rq = {
+        "action": "afficher historique",
+        "utilisateur": User
+    }
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect(('192.168.1.86', 9999))
+    message = json.dumps(rq)
+    message_obj = donnees(message)
+    print(message_obj.action)
+    s.send(message.encode("ascii"))
+    data = s.recv(1024)
+    s.close()
+    print(repr(data), 'Reçue')
+    print(rq)
+    data = donnees(data)
+    return data
+
+
+def fond():
+    User = "1"
+    rq = {
+        "action": "afficher fonds",
+        "utilisateur": User
+    }
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect(('192.168.1.86', 9999))
+    message = json.dumps(rq)
+    message_obj = donnees(message)
+    print(message_obj.action)
+    s.send(message.encode("ascii"))
+    data = s.recv(1024)
+    s.close()
+    print(repr(data), 'Reçue')
+    print(rq)
+    data = donnees(data)
+    return data
+
 
 window = Tk()
 
@@ -67,13 +106,16 @@ for i in range(len(rencontre)):
     log_button.grid(row=i+2, column=1)
 
 #feed + affichage de l'historique
-historique = ['+10€', '+87€', '-12€']
+historique = historique().historique
 for i in range(len(historique)):
-    label_Rencontre = Label(frame, text=historique[i], font=("Arial", 15), bg="#87CEFA", fg="white")
+    h = donnees(json.dumps(historique[i]))
+    v = str(h.resultat) + " €"
+
+    label_Rencontre = Label(frame, text=v, font=("Arial", 15), bg="#87CEFA", fg="white")
     label_Rencontre.grid(row=i + 2, column=3, sticky=E)
 
 #Affichage des fonds
-Fond = " Fond : " + str(1024) + " €"
+Fond = " Fonds : " + str(fond().fonds) + " €"
 label_Fond = Label(frame, text=Fond, font=("Arial", 15), bg="#87CEFA", fg="white")
 label_Fond.grid(row=0, column=3, sticky=E)
 
