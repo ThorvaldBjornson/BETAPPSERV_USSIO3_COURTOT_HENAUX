@@ -63,6 +63,5 @@ deposit_window.grid(column=2, row=0)
 admin_window.grid(column=3, row=0)
 
 
-frame.pack(expand=YES)
 
 app.mainloop()
