@@ -61,31 +61,72 @@ def connect():
     else:
         tk.messagebox.showwarning(title="Erreur", message="Vous n'avez pas entrez le bon couple identifiant mot de passe.")
 
+def register():
+    User = entry_register.get()
+    if entry_register_mdp.get() != entry_confirm_mdp.get():
+        tk.messagebox.showwarning(title="Erreur", message="Vous n'avez pas entrez les mêmes mot de passe.")
+    password = entry_register_mdp.get()
+    rq = {
+            "action" : "register",
+            "login"   : User,
+            "password": password
+        }
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect(('192.168.1.86', 9999))
+    message = json.dumps(rq)
+    message_obj = donnees(message)
+    print(message_obj.action)
+    s.send(message.encode("ascii"))
+    data = s.recv(1024)
+    s.close()
+    print(repr(data), 'Reçue')
+    if('success' in data.decode("ascii")):
+        raise_frame(frameUser)
 
 #Mise en place de la Frame
 frameLogin = tk.Frame(root, bg="#87CEFA", bd=1)
 
 #Initialisation du titre
 label_title = tk.Label(frameLogin, text="Bienvenue sur BetAppServeur", font=("Arial", 40), bg="#87CEFA", fg="white")
-label_title.pack()
+label_title.grid(row=0, column=1)
 
-#Initialisation du formulaire
+#Initialisation du formulaire de Login
 label_login = tk.Label(frameLogin, text="Login", font=("Arial", 20), bg="#87CEFA", fg="white")
-label_login.pack()
+label_login.grid(row=1, column=0)
 
 entry_login = tk.Entry(frameLogin, font=("Arial", 20), bg="#87CEFA", fg="white")
-entry_login.pack()
+entry_login.grid(row=2, column=0)
 
 label_mdp = tk.Label(frameLogin, text="Mot de Passe", font=("Arial", 20), bg="#87CEFA", fg="white")
-label_mdp.pack()
+label_mdp.grid(row=3, column=0)
 
 entry_mdp = tk.Entry(frameLogin, font=("Arial", 20), bg="#87CEFA", fg="white")
-entry_mdp.pack()
+entry_mdp.grid(row=4, column=0)
 
 log_button = tk.Button(frameLogin, text="Login", font=("Arial", 20), bg="#DCDCDC", fg="white", command=connect)
-log_button.pack()
+log_button.grid(row=5, column=0)
 
+#Initialisation du formulaire de Register
+label_register = tk.Label(frameLogin, text="Identifiant", font=("Arial", 20), bg="#87CEFA", fg="white")
+label_register.grid(row=1, column=2)
 
+entry_register = tk.Entry(frameLogin, font=("Arial", 20), bg="#87CEFA", fg="white")
+entry_register.grid(row=2, column=2)
+
+label_register_mdp = tk.Label(frameLogin, text="Mot de Passe", font=("Arial", 20), bg="#87CEFA", fg="white")
+label_register_mdp.grid(row=3, column=2)
+
+entry_register_mdp = tk.Entry(frameLogin, font=("Arial", 20), bg="#87CEFA", fg="white")
+entry_register_mdp.grid(row=4, column=2)
+
+label_confirm_mdp = tk.Label(frameLogin, text="Confirmer le Mot de Passe", font=("Arial", 20), bg="#87CEFA", fg="white")
+label_confirm_mdp.grid(row=5, column=2)
+
+entry_confirm_mdp = tk.Entry(frameLogin, font=("Arial", 20), bg="#87CEFA", fg="white")
+entry_confirm_mdp.grid(row=6, column=2)
+
+log_button = tk.Button(frameLogin, text="S'enregistrer", font=("Arial", 20), bg="#DCDCDC", fg="white", command=register)
+log_button.grid(row=7, column=2)
 
 
 
