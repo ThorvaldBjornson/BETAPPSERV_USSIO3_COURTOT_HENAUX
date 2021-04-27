@@ -516,6 +516,39 @@ class admin:
         data = donnees(data)
         return data
 
+    def ajoutRencontre(self):
+
+        discipline = label_Choix_Discipline.get()
+        rencontre = entry_Nom_Rencontre.get()
+        challenger1 = label_Choix_Challenger1.get()
+        challenger2 = label_Choix_Challenger2.get()
+        cote_challenger1 = entry_cote_challenger1.get()
+        cote_challenger2 =  entry_cote_challenger2.get()
+        date = entry_Date_Rencontre.get()
+        lieux = entry_Lieu_Rencontre.get()
+        if discipline or rencontre or challenger1 or challenger2 or cote_challenger1 or cote_challenger2 or date or lieux == '' :
+            tk.messagebox.showwarning(title="Erreur", message="Veuillez remplir tous les champs.")
+        else :
+            rq = {
+                "action": "ajout ajoutRencontre",
+                "discipline": discipline,
+                "rencontre": rencontre,
+                "challenger1": challenger1,
+                "challenger2": challenger2,
+                "cote challenger1": cote_challenger1,
+                "cote challenger2": cote_challenger2,
+                "date": date,
+                "lieux": lieux
+            }
+            print("Appel de ajout")
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.connect(('192.168.1.86', 9999))
+            message = json.dumps(rq)
+            message_obj = donnees(message)
+            print(message_obj.action)
+            s.send(message.encode("ascii"))
+            print(rq)
+
 admin = admin()
 #Mise en place de la Frame
 frameAdmin = tk.Frame(root, bg="#87CEFA", bd=1)
@@ -566,10 +599,10 @@ entry_Date_Rencontre = tk.Entry(frameAdmin, font=("Arial", 15), bg="#87CEFA", fg
 entry_Date_Rencontre.grid(row=6, column=4)
 
 #Lieu Rencontre
-label_Nom_Rencontre = tk.Label(frameAdmin, text="Lieux de la Rencontre :", font=("Arial", 15), bg="#87CEFA", fg="white")
-label_Nom_Rencontre.grid(row=7, column=4)
-entry_Nom_Rencontre = tk.Entry(frameAdmin, font=("Arial", 15), bg="#87CEFA", fg="white")
-entry_Nom_Rencontre.grid(row=8, column=4)
+label_Lieu_Rencontre = tk.Label(frameAdmin, text="Lieux de la Rencontre :", font=("Arial", 15), bg="#87CEFA", fg="white")
+label_Lieu_Rencontre.grid(row=7, column=4)
+entry_Lieu_Rencontre = tk.Entry(frameAdmin, font=("Arial", 15), bg="#87CEFA", fg="white")
+entry_Lieu_Rencontre.grid(row=8, column=4)
 
 #Challenger
 v = admin.challenger().challengers
@@ -582,6 +615,12 @@ label_Choix_Challenger1 = ttk.Combobox(frameAdmin, values=nomChall, state="reado
 print(dict(label_Choix_Challenger1))
 label_Choix_Challenger1.current(0)
 label_Choix_Challenger1.grid(row=9, column=4)
+
+label_cote_challenger1 = tk.Label(frameAdmin, text="Cote du challenger :", font=("Arial", 17), bg="#87CEFA", fg="white")
+label_cote_challenger1.grid(row=10, columl=4)
+
+entry_cote_challenger1 = tk.Entry(frameAdmin, font=("Arial", 15), bg="#87CEFA", fg="white")
+entry_cote_challenger1.grid(row=11, column=4)
 
 label_vs = tk.Label(frameAdmin, text="VS", font=("Arial", 17), bg="#87CEFA", fg="white")
 label_vs.grid(row=9, column=5)
@@ -596,6 +635,12 @@ label_Choix_Challenger2 = ttk.Combobox(frameAdmin, values=nomChall, state="reado
 print(dict(label_Choix_Challenger2))
 label_Choix_Challenger2.current(0)
 label_Choix_Challenger2.grid(row=9, column=6)
+
+label_cote_challenger2 = tk.Label(frameAdmin, text="Cote du challenger :", font=("Arial", 17), bg="#87CEFA", fg="white")
+label_cote_challenger2.grid(row=10, columl=6)
+
+entry_cote_challenger2 = tk.Entry(frameAdmin, font=("Arial", 15), bg="#87CEFA", fg="white")
+entry_cote_challenger2.grid(row=11, column=6)
 
 #Discipline
 label_Discipline = tk.Label(frameAdmin, text="Choix de la Discipline :", font=("Arial", 15), bg="#87CEFA", fg="white")
@@ -613,7 +658,7 @@ label_Choix_Discipline.grid(row=5, column=6)
 
 
 #bouton ajout
-log_button = tk.Button(frameAdmin, text="Ajouter", font=("Arial", 15), bg="white", fg="#87CEFA")
+log_button = tk.Button(frameAdmin, text="Ajouter", font=("Arial", 15), bg="white", fg="#87CEFA", command=ajoutRencontre)
 log_button.grid(row=10, column=5)
 
 #======================================================================
