@@ -102,7 +102,7 @@ entry_login.grid(row=2, column=0)
 label_mdp = tk.Label(frameLogin, text="Mot de Passe", font=("Arial", 20), bg="#87CEFA", fg="white")
 label_mdp.grid(row=3, column=0)
 
-entry_mdp = tk.Entry(frameLogin, font=("Arial", 20), bg="#87CEFA", fg="white")
+entry_mdp = tk.Entry(frameLogin, font=("Arial", 20), bg="#87CEFA", fg="white", show='*')
 entry_mdp.grid(row=4, column=0)
 
 log_button = tk.Button(frameLogin, text="Login", font=("Arial", 20), bg="#DCDCDC", fg="white", command=connect)
@@ -118,13 +118,13 @@ entry_register.grid(row=2, column=2)
 label_register_mdp = tk.Label(frameLogin, text="Mot de Passe", font=("Arial", 20), bg="#87CEFA", fg="white")
 label_register_mdp.grid(row=3, column=2)
 
-entry_register_mdp = tk.Entry(frameLogin, font=("Arial", 20), bg="#87CEFA", fg="white")
+entry_register_mdp = tk.Entry(frameLogin, font=("Arial", 20), bg="#87CEFA", fg="white", show='*')
 entry_register_mdp.grid(row=4, column=2)
 
 label_confirm_mdp = tk.Label(frameLogin, text="Confirmer le Mot de Passe", font=("Arial", 20), bg="#87CEFA", fg="white")
 label_confirm_mdp.grid(row=5, column=2)
 
-entry_confirm_mdp = tk.Entry(frameLogin, font=("Arial", 20), bg="#87CEFA", fg="white")
+entry_confirm_mdp = tk.Entry(frameLogin, font=("Arial", 20), bg="#87CEFA", fg="white", show='*')
 entry_confirm_mdp.grid(row=6, column=2)
 
 log_button = tk.Button(frameLogin, text="S'enregistrer", font=("Arial", 20), bg="#DCDCDC", fg="white", command=register)
