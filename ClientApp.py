@@ -82,6 +82,8 @@ def register():
     print(repr(data), 'Reçue')
     if('success' in data.decode("ascii")):
         raise_frame(frameUser)
+    else:
+        tk.messagebox.showwarning(title="Erreur", message="Cette identifiant existe déjà.")
 
 #Mise en place de la Frame
 frameLogin = tk.Frame(root, bg="#87CEFA", bd=1)
@@ -302,7 +304,7 @@ for challenger in val:
     challenger = donnees(json.dumps(challenger))
     nomChall.append(challenger.nom)
 
-label_Choix_Vainqueur = ttk.Combobox(framePari, values=nomChall)
+label_Choix_Vainqueur = ttk.Combobox(framePari, values=nomChall, state="readonly")
 print(dict(label_Choix_Vainqueur))
 label_Choix_Vainqueur.current(1)
 label_Choix_Vainqueur.grid(row=2, column=2)
@@ -333,7 +335,7 @@ class compte:
         print(message_obj.action)
         s.send(message.encode("ascii"))
         print(rq)
-        fond()
+        self.fond()
 
     def historique(self):
         print("Appel de historique")
@@ -450,7 +452,7 @@ Combobox_depot = ttk.Combobox(frameCompte,
                                     "100",
                                     "200",
                                     "500",
-                                    ])
+                                    ], state="readonly")
 print(dict(Combobox_depot))
 Combobox_depot.current(1)
 Combobox_depot.grid(row=5, column=2)
@@ -576,7 +578,7 @@ for challenger in v:
     challenger = donnees(json.dumps(challenger))
     nomChall.append(challenger.nom)
 
-label_Choix_Challenger1 = ttk.Combobox(frameAdmin, values=nomChall)
+label_Choix_Challenger1 = ttk.Combobox(frameAdmin, values=nomChall, state="readonly")
 print(dict(label_Choix_Challenger1))
 label_Choix_Challenger1.current(0)
 label_Choix_Challenger1.grid(row=9, column=4)
@@ -590,7 +592,7 @@ for challenger in va:
     challenger = donnees(json.dumps(challenger))
     nomChall.append(challenger.nom)
 
-label_Choix_Challenger2 = ttk.Combobox(frameAdmin, values=nomChall)
+label_Choix_Challenger2 = ttk.Combobox(frameAdmin, values=nomChall, state="readonly")
 print(dict(label_Choix_Challenger2))
 label_Choix_Challenger2.current(0)
 label_Choix_Challenger2.grid(row=9, column=6)
@@ -604,7 +606,7 @@ for discipline in valueDiscipline:
     discipline = donnees(json.dumps(discipline))
     Discipline.append(discipline.nom)
 
-label_Choix_Discipline = ttk.Combobox(frameAdmin, values=Discipline)
+label_Choix_Discipline = ttk.Combobox(frameAdmin, values=Discipline, state="readonly")
 print(dict(label_Choix_Discipline))
 label_Choix_Discipline.current(0)
 label_Choix_Discipline.grid(row=5, column=6)
@@ -651,7 +653,7 @@ for challenger in Vainqueur:
     challenger = donnees(json.dumps(challenger))
     nomVainqueur.append(challenger.nom)
 
-label_Choix_Challenger1 = ttk.Combobox(frameVainqueur, values=nomVainqueur)
+label_Choix_Challenger1 = ttk.Combobox(frameVainqueur, values=nomVainqueur, state="readonly")
 print(dict(label_Choix_Challenger1))
 label_Choix_Challenger1.current(0)
 label_Choix_Challenger1.grid(row=9, column=4)
