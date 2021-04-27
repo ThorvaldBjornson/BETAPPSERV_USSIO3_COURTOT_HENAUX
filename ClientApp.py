@@ -504,8 +504,8 @@ for i in range(len(rencontre)):
     label_Rencontre.grid(row=i+3, column=0)
     Cancel_button = tk.Button(frameAdmin, text="Annulé", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:raise_frame(framePari))
     Cancel_button.grid(row=i+3, column=1)
-    Winer_button = tk.Button(frameAdmin, text="Choisir un Vainqueur", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda: raise_frame(frameVainqueur))
-    Winer_button.grid(row=i + 3, column=2)
+    Winner_button = tk.Button(frameAdmin, text="Choisir un Vainqueur", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda: raise_frame(frameVainqueur))
+    Winner_button.grid(row=i + 3, column=2)
 
 ## Ajout d'une rencontre
 #Nom rencontre
@@ -608,7 +608,7 @@ for challenger in Vainqueur:
     challenger = donnees(json.dumps(challenger))
     nomVainqueur.append(challenger.nom)
 
-label_Choix_Challenger1 = ttk.Combobox(frameAdmin, values=nomVainqueur)
+label_Choix_Challenger1 = ttk.Combobox(frameVainqueur, values=nomVainqueur)
 print(dict(label_Choix_Challenger1))
 label_Choix_Challenger1.current(0)
 label_Choix_Challenger1.grid(row=9, column=4)
@@ -621,7 +621,7 @@ log_button.grid(row=14, column=5)
 #-------------Assemblage des frames, génération de la page-------------
 #======================================================================
 
-for frame in (frameLogin, frameUser, frameCompte, framePari, frameAdmin):
+for frame in (frameLogin, frameUser, frameCompte, framePari, frameAdmin, frameVainqueur):
     frame.grid(row=0, column=0, sticky='news')
 
 raise_frame(frameLogin)
