@@ -481,13 +481,10 @@ label_title = tk.Label(frameAdmin, text="BetApp", font=("Arial", 40), bg="#87CEF
 label_title.grid(row=0, column=3)
 
 label_Rencontre = tk.Label(frameAdmin, text="Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
-label_Rencontre.grid(row=2, column=1)
+label_Rencontre.grid(row=2, column=1, columnspan=2)
 
 label_Ajout_Rencontre = tk.Label(frameAdmin, text="Ajouter Une Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
 label_Ajout_Rencontre.grid(row=2, column=5)
-
-label_Vainqueur = tk.Label(frameAdmin, text="Choisir un Vainqueur", font=("Arial", 20), bg="#87CEFA", fg="white")
-label_Vainqueur.grid(row=12, column=5)
 
 #Récuperation identité
 User = "Admin"
@@ -505,8 +502,10 @@ for i in range(len(rencontre)):
 
     label_Rencontre = tk.Label(frameAdmin, text=values, font=("Arial", 15), bg="#87CEFA", fg="white")
     label_Rencontre.grid(row=i+3, column=0)
-    log_button = tk.Button(frameAdmin, text="Annulé", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:raise_frame(framePari))
-    log_button.grid(row=i+3, column=1)
+    Cancel_button = tk.Button(frameAdmin, text="Annulé", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:raise_frame(framePari))
+    Cancel_button.grid(row=i+3, column=1)
+    Winer_button = tk.Button(frameAdmin, text="Choisir un Vainqueur", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda: raise_frame(frameVainqueur))
+    Winer_button.grid(row=i + 3, column=2)
 
 ## Ajout d'une rencontre
 #Nom rencontre
@@ -575,14 +574,44 @@ log_button.grid(row=10, column=5)
 #======================================================================
 #---------------------------Choix Vainqueur----------------------------
 #======================================================================
+class Vainqueur:
+
+    def challenger(self):
+        Rencontre = "1"
+        rq = {
+            "action": "afficher challenger",
+            "rencontre": Rencontre
+        }
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect(('192.168.1.86', 9999))
+        message = json.dumps(rq)
+        message_obj = donnees(message)
+        print(message_obj.action)
+        s.send(message.encode("ascii"))
+        data = s.recv(1024)
+        s.close()
+        print(repr(data), 'Reçue')
+        print(rq)
+        data = donnees(data)
+        return data
+
+frameVainqueur= tk.Frame(root, bg="#87CEFA", bd=1)
 
 #Choix Rencontre
 label_Rencontre_Vainqueur = tk.Label(frameVainqueur, text="inserer combobox rencontre", font=("Arial", 15), bg="#87CEFA", fg="white")
 label_Rencontre_Vainqueur.grid(row=13, column=4)
 
 #Choix Vainqueur
-label_Vainqueur_Rencontre = tk.Label(frameVainqueur, text="inserer combobox vainqueur", font=("Arial", 15), bg="#87CEFA", fg="white")
-label_Vainqueur_Rencontre.grid(row=13, column=6)
+Vainqueur = admin.challenger().challengers
+nomVainqueur = []
+for challenger in Vainqueur:
+    challenger = donnees(json.dumps(challenger))
+    nomVainqueur.append(challenger.nom)
+
+label_Choix_Challenger1 = ttk.Combobox(frameAdmin, values=nomVainqueur)
+print(dict(label_Choix_Challenger1))
+label_Choix_Challenger1.current(0)
+label_Choix_Challenger1.grid(row=9, column=4)
 
 #Bouton
 log_button = tk.Button(frameVainqueur, text="Ajouter", font=("Arial", 15), bg="white", fg="#87CEFA")
