@@ -58,6 +58,8 @@ def connect():
     print(repr(data), 'Reçue')
     if('success' in data.decode("ascii")):
         raise_frame(frameUser)
+    else:
+        tk.messagebox.showwarning(title="Erreur", message="Vous n'avez pas entrez le bon couple identifiant mot de passe.")
 
 
 #Mise en place de la Frame
