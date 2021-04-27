@@ -640,6 +640,27 @@ class Vainqueur:
         data = donnees(data)
         return data
 
+    def envoiVainqueur(self):
+        Rencontre = "1"
+        rq = {
+            "action": "choisir vainqueur",
+            "rencontre": Rencontre,
+            "challenger": idVainqueur[cbbVainqueur.current()]
+        }
+        print(idVainqueur[cbbVainqueur.current()])
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect(('192.168.1.86', 9999))
+        message = json.dumps(rq)
+        message_obj = donnees(message)
+        print(message_obj.action)
+        s.send(message.encode("ascii"))
+        data = s.recv(1024)
+        s.close()
+        print(repr(data), 'Reçue')
+        print(rq)
+        return data
+
+vainqueur = Vainqueur()
 frameVainqueur= tk.Frame(root, bg="#87CEFA", bd=1)
 
 #Choix Rencontre
@@ -647,20 +668,22 @@ label_Rencontre_Vainqueur = tk.Label(frameVainqueur, text="inserer combobox renc
 label_Rencontre_Vainqueur.grid(row=13, column=4)
 
 #Choix Vainqueur
-Vainqueur = admin.challenger().challengers
+Challengers = admin.challenger().challengers
 nomVainqueur = []
-for challenger in Vainqueur:
+idVainqueur = []
+for challenger in Challengers:
     challenger = donnees(json.dumps(challenger))
     nomVainqueur.append(challenger.nom)
+    idVainqueur.append(challenger.id)
 
-label_Choix_Challenger1 = ttk.Combobox(frameVainqueur, values=nomVainqueur, state="readonly")
+cbbVainqueur = ttk.Combobox(frameVainqueur, values=nomVainqueur, state="readonly")
 print(dict(label_Choix_Challenger1))
-label_Choix_Challenger1.current(0)
-label_Choix_Challenger1.grid(row=9, column=4)
+cbbVainqueur.current(0)
+cbbVainqueur.grid(row=9, column=4)
 
 #Bouton
-log_button = tk.Button(frameVainqueur, text="Ajouter", font=("Arial", 15), bg="white", fg="#87CEFA")
-log_button.grid(row=14, column=5)
+btnVainqueur = tk.Button(frameVainqueur, text="Ajouter", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda :vainqueur.envoiVainqueur())
+btnVainqueur.grid(row=14, column=5)
 
 #======================================================================
 #-------------Assemblage des frames, génération de la page-------------
