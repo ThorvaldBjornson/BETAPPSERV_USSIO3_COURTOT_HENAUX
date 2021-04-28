@@ -613,7 +613,6 @@ class Rencontre:
 
     def ajoutRencontre(self):
 
-
         discipline = idDiscipline[LabelChoixDiscipline.current()]
         rencontre = EntryNomRencontre.get()
         challenger1 = idChallenger[LabelChoixChallenger1.current()]
@@ -658,6 +657,8 @@ class Rencontre:
                 print(rq)
 
 ajout = Rencontre()
+
+frameAjout = tk.Frame(root, bg="#87CEFA", bd=1)
 ## Ajout d'une rencontre
 #Nom rencontre
 LabelNomRencontre = tk.Label(frameAdmin, text="Nom de la Rencontre :", font=("Arial", 15), bg="#87CEFA", fg="white")
@@ -686,18 +687,18 @@ for challenger in valeurChallengerAdmin:
     nomChallAdmin.append(challenger.nom)
     idChallengerAdmin.append(challenger.id)
 
-LabelChoixChallenger1 = ttk.Combobox(frameAdmin, values=nomChallAdmin, state="readonly")
+LabelChoixChallenger1 = ttk.Combobox(frameAjout, values=nomChallAdmin, state="readonly")
 print(dict(LabelChoixChallenger1))
 LabelChoixChallenger1.current(0)
 LabelChoixChallenger1.grid(row=9, column=4)
 
-LabelCoteChallenger1 = tk.Label(frameAdmin, text="Cote du challenger :", font=("Arial", 17), bg="#87CEFA", fg="white")
+LabelCoteChallenger1 = tk.Label(frameAjout, text="Cote du challenger :", font=("Arial", 17), bg="#87CEFA", fg="white")
 LabelCoteChallenger1.grid(row=10, column=4)
 
-EntryCoteChallenger1 = tk.Entry(frameAdmin, font=("Arial", 15), bg="#87CEFA", fg="white")
+EntryCoteChallenger1 = tk.Entry(frameAjout, font=("Arial", 15), bg="#87CEFA", fg="white")
 EntryCoteChallenger1.grid(row=11, column=4)
 
-LabelVs = tk.Label(frameAdmin, text="VS", font=("Arial", 17), bg="#87CEFA", fg="white")
+LabelVs = tk.Label(frameAjout, text="VS", font=("Arial", 17), bg="#87CEFA", fg="white")
 LabelVs.grid(row=9, column=5)
 
 valeurChallenger2Admin = admin.challenger().challengers
@@ -708,19 +709,19 @@ for challenger in valeurChallenger2Admin:
     nomChallAdmin2.append(challenger.nom)
     idChallengerAdmin2.append(challenger.id)
 
-LabelChoixChallenger2 = ttk.Combobox(frameAdmin, values=nomChallAdmin2, state="readonly")
+LabelChoixChallenger2 = ttk.Combobox(frameAjout, values=nomChallAdmin2, state="readonly")
 print(dict(LabelChoixChallenger2))
 LabelChoixChallenger2.current(0)
 LabelChoixChallenger2.grid(row=9, column=6)
 
-LabelCoteChallenger2 = tk.Label(frameAdmin, text="Cote du challenger :", font=("Arial", 17), bg="#87CEFA", fg="white")
+LabelCoteChallenger2 = tk.Label(frameAjout, text="Cote du challenger :", font=("Arial", 17), bg="#87CEFA", fg="white")
 LabelCoteChallenger2.grid(row=10, column=6)
 
-EntryCoteChallenger2 = tk.Entry(frameAdmin, font=("Arial", 15), bg="#87CEFA", fg="white")
+EntryCoteChallenger2 = tk.Entry(frameAjout, font=("Arial", 15), bg="#87CEFA", fg="white")
 EntryCoteChallenger2.grid(row=11, column=6)
 
 #Discipline
-LabelDiscipline = tk.Label(frameAdmin, text="Choix de la Discipline :", font=("Arial", 15), bg="#87CEFA", fg="white")
+LabelDiscipline = tk.Label(frameAjout, text="Choix de la Discipline :", font=("Arial", 15), bg="#87CEFA", fg="white")
 LabelDiscipline.grid(row=4, column=6)
 valueDiscipline = admin.discipline().disciplines
 Discipline = []
@@ -730,14 +731,14 @@ for discipline in valueDiscipline:
     Discipline.append(discipline.nom)
     idDiscipline.append(discipline.id)
 
-LabelChoixDiscipline = ttk.Combobox(frameAdmin, values=Discipline, state="readonly")
+LabelChoixDiscipline = ttk.Combobox(frameAjout, values=Discipline, state="readonly")
 print(dict(LabelChoixDiscipline))
 LabelChoixDiscipline.current(0)
 LabelChoixDiscipline.grid(row=5, column=6)
 
 
 #bouton ajout
-ButtonAjoutRencontre = tk.Button(frameAdmin, text="Ajouter", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda : admin.ajoutRencontre())
+ButtonAjoutRencontre = tk.Button(frameAjout, text="Ajouter", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda : admin.ajoutRencontre())
 ButtonAjoutRencontre.grid(row=12, column=5)
 
 #======================================================================
@@ -786,13 +787,13 @@ class Vainqueur:
 
 vainqueur = Vainqueur()
 
-frameAjout= tk.Frame(root, bg="#87CEFA", bd=1)
+frameVainqueur= tk.Frame(root, bg="#87CEFA", bd=1)
 
-LabelTitleVainqueur = tk.Label(frameAjout, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
+LabelTitleVainqueur = tk.Label(frameVainqueur, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
 LabelTitleVainqueur.grid(row=0, column=0)
 
 #Choix Rencontre
-LabelRencontreVainqueur = tk.Label(frameAjout, text="Choisir un Vainqueur", font=("Arial", 15), bg="#87CEFA", fg="white")
+LabelRencontreVainqueur = tk.Label(frameVainqueur, text="Choisir un Vainqueur", font=("Arial", 15), bg="#87CEFA", fg="white")
 LabelRencontreVainqueur.grid(row=1, column=0)
 
 #Choix Vainqueur
@@ -804,13 +805,13 @@ for challenger in Challengers:
     nomVainqueur.append(challenger.nom)
     idVainqueur.append(challenger.id)
 
-ComboboxVainqueur = ttk.Combobox(frameAjout, values=nomVainqueur, state="readonly")
+ComboboxVainqueur = ttk.Combobox(frameVainqueur, values=nomVainqueur, state="readonly")
 print(dict(ComboboxVainqueur))
 ComboboxVainqueur.current(0)
 ComboboxVainqueur.grid(row=2, column=0)
 
 #Bouton
-btnVainqueur = tk.Button(frameAjout, text="Ajouter", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda :vainqueur.envoiVainqueur())
+btnVainqueur = tk.Button(frameVainqueur, text="Ajouter", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda :vainqueur.envoiVainqueur())
 btnVainqueur.grid(row=3, column=0)
 
 #======================================================================
