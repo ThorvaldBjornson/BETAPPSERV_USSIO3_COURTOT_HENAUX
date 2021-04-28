@@ -24,6 +24,8 @@ root.config(background="#87CEFA")
 Menu_bar = tk.Menu(root)
 
 action_menu = tk.Menu(Menu_bar, tearoff=0)
+
+action_menu.add_command(label="Acceuil", command=lambda: raise_frame(frameUser))
 action_menu.add_command(label="Mon Compte", command=lambda: raise_frame(frameCompte))
 action_menu.add_command(label="Quitter", command=root.quit)
 
