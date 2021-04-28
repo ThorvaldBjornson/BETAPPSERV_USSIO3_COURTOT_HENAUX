@@ -232,6 +232,7 @@ LabelUser.grid(row=0, column=0)
 
 #feed + affichage des rencontres
 rencontre = ut.rencontre().rencontre
+i= 0
 for i in range(len(rencontre)):
     r = donnees(json.dumps(rencontre[i]))
     values = r.nom + " le " + r.date + " à " + r.lieu
@@ -252,7 +253,7 @@ for i in range(len(historique)):
 
 #Affichage des fonds
 
-Fond = " Fonds : " + str(ut.fond().fonds) + " €"
+Fond = " Fonds : " + str(ut.fond()) + " €"
 
 LabelFond = tk.Label(frameUser, text=Fond, font=("Arial", 15), bg="#87CEFA", fg="white")
 LabelFond.grid(row=0, column=3)
@@ -343,6 +344,9 @@ for rencontre in RencontrePari:
     nomRencontrePari.append(rencontre.nom)
     idRencontrePari.append(rencontre.id)
 
+if idRencontrePari == []:
+    nomRencontrePari = [""]
+    idRencontrePari = [""]
 ComboboxRencontrePari = ttk.Combobox(framePari, values=nomRencontrePari, state="readonly")
 print(dict(ComboboxRencontrePari))
 ComboboxRencontrePari.current(0)
@@ -354,7 +358,7 @@ print(ValeurChallenger)
 LabelChallengerPari = tk.Label(framePari, text="Choisir une challenger : ", font=("Arial", 15), bg="#87CEFA", fg="white")
 LabelChallengerPari.grid(row=2, column=0)
 
-nomChall = []
+nomChall = [""]
 for challenger in ValeurChallenger:
     challenger = donnees(json.dumps(challenger))
     nomChall.append(challenger.nom)
@@ -605,6 +609,10 @@ class Rencontre:
         s.close()
         print(repr(data), 'Reçue')
         print(rq)
+        if 'fail' in repr(data):
+            data = '{' \
+                   '   "challengers" : []' \
+                   '}'
         data = donnees(data)
         return data
 
@@ -694,7 +702,7 @@ EntryLieuRencontre = tk.Entry(frameAjout, font=("Arial", 15), bg="#87CEFA", fg="
 EntryLieuRencontre.grid(row=8, column=4)
 
 #Challenger
-valeurChallengerAdmin = admin.challenger().challengers
+valeurChallengerAdmin = ajout.challenger().challengers
 nomChallAdmin = []
 idChallengerAdmin = []
 for challenger in valeurChallengerAdmin:
@@ -716,7 +724,7 @@ EntryCoteChallenger1.grid(row=11, column=4)
 LabelVs = tk.Label(frameAjout, text="VS", font=("Arial", 17), bg="#87CEFA", fg="white")
 LabelVs.grid(row=9, column=5)
 
-valeurChallenger2Admin = admin.challenger().challengers
+valeurChallenger2Admin = ajout.challenger().challengers
 nomChallAdmin2 = []
 idChallengerAdmin2 = []
 for challenger in valeurChallenger2Admin:
@@ -738,7 +746,7 @@ EntryCoteChallenger2.grid(row=11, column=6)
 #Discipline
 LabelDiscipline = tk.Label(frameAjout, text="Choix de la Discipline :", font=("Arial", 15), bg="#87CEFA", fg="white")
 LabelDiscipline.grid(row=4, column=6)
-valueDiscipline = admin.discipline().disciplines
+valueDiscipline = ajout.discipline().disciplines
 Discipline = []
 idDiscipline = []
 for discipline in valueDiscipline:
@@ -810,7 +818,7 @@ LabelRencontreVainqueur = tk.Label(frameVainqueur, text="Choisir un Vainqueur", 
 LabelRencontreVainqueur.grid(row=1, column=0)
 
 #Choix Vainqueur
-Challengers = admin.challenger().challengers
+Challengers = ajout.challenger().challengers
 nomVainqueur = []
 idVainqueur = []
 for challenger in Challengers:
