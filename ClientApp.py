@@ -1,6 +1,7 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import messagebox
+import hashlib
 import socket
 import json
 
@@ -44,6 +45,7 @@ root.config(menu=Menu_bar)
 def connect():
     User = EntryLogin.get()
     password = EntryPassword.get()
+    password = hashlib.sha256(password.encode()).hexdigest()
     rq = {
             "action" : "connection",
             "login"   : User,
@@ -51,6 +53,7 @@ def connect():
         }
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect(('192.168.1.86', 9999))
+    print(rq)
     message = json.dumps(rq)
     message_obj = donnees(message)
     print(message_obj.action)
@@ -94,9 +97,10 @@ ButtonGoToRegister.grid()
 #======================================================================
 def register():
     User = EntryRegister.get()
-    if LabelRegisterPassword.get() != EntryConfirmPassword.get():
+    if EntryRegisterPassword.get() != EntryConfirmPassword.get():
         tk.messagebox.showwarning(title="Erreur", message="Vous n'avez pas entrez les mêmes mot de passe.")
     password = EntryRegisterPassword.get()
+    password = hashlib.sha256(password.encode()).hexdigest()
     rq = {
             "action" : "register",
             "login"   : User,
@@ -202,7 +206,7 @@ class utilisateur:
         s.close()
         print(repr(data), 'Reçue')
         print(rq)
-        data = donnees(data)
+        data = data.decode("ascii")
         return data
 
 ut = utilisateur()
@@ -247,7 +251,9 @@ for i in range(len(historique)):
     LabelHistorique.grid(row=i + 2, column=3)
 
 #Affichage des fonds
+
 Fond = " Fonds : " + str(ut.fond().fonds) + " €"
+
 LabelFond = tk.Label(frameUser, text=Fond, font=("Arial", 15), bg="#87CEFA", fg="white")
 LabelFond.grid(row=0, column=3)
 
@@ -274,7 +280,7 @@ class Pari:
 
     def parier(self):
         Montant = entry_Bet.get()
-        Rencontre = "1"
+        Rencontre = "5"
         Challenger = label_Choix_Vainqueur.get()
         User = "6"
         print(Montant)
@@ -427,7 +433,7 @@ class compte:
         s.close()
         print(repr(data), 'Reçue')
         print(rq)
-        data = donnees(data)
+        data = data.decode("ascii")
         return data
 
     def statistiques(self):
@@ -447,6 +453,13 @@ class compte:
         s.close()
         print(repr(data), 'Reçue')
         print(rq)
+        if 'fail' in repr(data):
+            data = '{' \
+                   '    "totalGain" : 0,' \
+                   '    "totalParis": 0,' \
+                   '    "totalVictoire": 0,' \
+                   '    "Ratio" : 0' \
+                   '}'
         data = donnees(data)
         return data
 
@@ -466,7 +479,8 @@ LabelHistorique = tk.Label(frameCompte, text="Historique des gains", font=("Aria
 LabelHistorique.grid(row=1, column=1)
 
 #Affichage des fonds
-Fond = " Fonds : " + str(compteUser.fond().fonds) + " €"
+Fond = " Fonds : " + str(compteUser.fond()) + " €"
+
 LabelFond = tk.Label(frameCompte, text=Fond, font=("Arial", 15), bg="#87CEFA", fg="white")
 LabelFond.grid(row=1, column=3)
 
@@ -658,6 +672,7 @@ class Rencontre:
                 print(rq)
 
 ajout = Rencontre()
+
 ## Ajout d'une rencontre
 #Nom rencontre
 LabelNomRencontre = tk.Label(frameAdmin, text="Nom de la Rencontre :", font=("Arial", 15), bg="#87CEFA", fg="white")
@@ -746,7 +761,7 @@ ButtonAjoutRencontre.grid(row=12, column=5)
 class Vainqueur:
 
     def challenger(self):
-        Rencontre = "1"
+        Rencontre = "5"
         rq = {
             "action": "afficher challenger",
             "rencontre": Rencontre
@@ -785,14 +800,12 @@ class Vainqueur:
         return data
 
 vainqueur = Vainqueur()
-
-frameAjout= tk.Frame(root, bg="#87CEFA", bd=1)
-
-LabelTitleVainqueur = tk.Label(frameAjout, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
+frameVainqueur= tk.Frame(root, bg="#87CEFA", bd=1)
+LabelTitleVainqueur = tk.Label(frameVainqueur, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
 LabelTitleVainqueur.grid(row=0, column=0)
 
 #Choix Rencontre
-LabelRencontreVainqueur = tk.Label(frameAjout, text="Choisir un Vainqueur", font=("Arial", 15), bg="#87CEFA", fg="white")
+LabelRencontreVainqueur = tk.Label(frameVainqueur, text="Choisir un Vainqueur", font=("Arial", 15), bg="#87CEFA", fg="white")
 LabelRencontreVainqueur.grid(row=1, column=0)
 
 #Choix Vainqueur
@@ -804,13 +817,13 @@ for challenger in Challengers:
     nomVainqueur.append(challenger.nom)
     idVainqueur.append(challenger.id)
 
-ComboboxVainqueur = ttk.Combobox(frameAjout, values=nomVainqueur, state="readonly")
+ComboboxVainqueur = ttk.Combobox(frameVainqueur, values=nomVainqueur, state="readonly")
 print(dict(ComboboxVainqueur))
 ComboboxVainqueur.current(0)
 ComboboxVainqueur.grid(row=2, column=0)
 
 #Bouton
-btnVainqueur = tk.Button(frameAjout, text="Ajouter", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda :vainqueur.envoiVainqueur())
+btnVainqueur = tk.Button(frameVainqueur, text="Ajouter", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda :vainqueur.envoiVainqueur())
 btnVainqueur.grid(row=3, column=0)
 
 #======================================================================
