@@ -625,7 +625,11 @@ for challenger in v:
     challenger = donnees(json.dumps(challenger))
     nomChall.append(challenger.nom)
     idChallenger.append(challenger.id)
+<<<<<<< Updated upstream
 
+=======
+    
+>>>>>>> Stashed changes
 label_Choix_Challenger1 = ttk.Combobox(frameAdmin, values=nomChall, state="readonly")
 print(dict(label_Choix_Challenger1))
 label_Choix_Challenger1.current(0)
