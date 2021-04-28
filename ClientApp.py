@@ -66,7 +66,8 @@ frameLogin = tk.Frame(root, bg="#87CEFA", bd=1)
 
 #Initialisation du titre
 label_title = tk.Label(frameLogin, text="Bienvenue sur BetAppServeur", font=("Arial", 40), bg="#87CEFA", fg="white")
-label_title.grid(row=0, column=0)
+label_title_accueil = tk.Label(frameLogin, text="Bienvenue sur BetAppServeur", font=("Arial", 40), bg="#87CEFA", fg="white")
+label_title_accueil.grid(row=0, column=0)
 
 #Initialisation du formulaire de Login
 label_login = tk.Label(frameLogin, text="Login", font=("Arial", 20), bg="#87CEFA", fg="white")
@@ -81,11 +82,11 @@ label_mdp.grid(row=3, column=0)
 entry_mdp = tk.Entry(frameLogin, font=("Arial", 20), bg="#87CEFA", fg="white", show='*')
 entry_mdp.grid(row=4, column=0)
 
-log_button = tk.Button(frameLogin, text="Login", font=("Arial", 20), bg="#DCDCDC", fg="white", command=connect)
-log_button.grid(row=5, column=0)
+button_connexion = tk.Button(frameLogin, text="Login", font=("Arial", 20), bg="#DCDCDC", fg="white", command=connect)
+button_connexion.grid(row=5, column=0)
 
-go_to_register = tk.Button(frameLogin, text="S'enregistrer", font=("Arial", 20), bg="#DCDCDC", fg="white", command=lambda: raise_frame(frameRegister) )
-go_to_register.grid(row=6, column=0)
+button_go_to_register = tk.Button(frameLogin, text="S'enregistrer", font=("Arial", 20), bg="#DCDCDC", fg="white", command=lambda: raise_frame(frameRegister) )
+button_go_to_register.grid(row=6, column=0)
 
 #======================================================================
 #-------------------------Frame Login----------------------------------
@@ -109,6 +110,7 @@ def register():
     data = s.recv(1024)
     s.close()
     print(repr(data), 'Reçue')
+    print(rq)
     if('success' in data.decode("ascii")):
         raise_frame(frameUser)
     elif('login existant' in data.decode("ascii")):
