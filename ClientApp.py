@@ -31,9 +31,9 @@ Menu_bar.add_cascade(label="Action", menu=action_menu)
 
 
 admin_menu = tk.Menu(Menu_bar, tearoff=0)
-AjoutRencontre = tk.Menu(Menu_bar, tearoff=0)
-admin_menu.add_command(label="Accueil", command=lambda:raise_frame(frameRencontre))
-AjoutRencontre.add_command(label="Ajouter Une Rencontre", command=lambda:raise_frame(frameAjout))
+admin_menu.add_command(label="Accueil", command=lambda:raise_frame(frameAdmin))
+admin_menu.add_command(label="Ajouter Une Rencontre", command=lambda:raise_frame(frameAjout))
+admin_menu.add_command(label="Annuler Une Rencontre", command=lambda:raise_frame(frameCancel))
 
 Menu_bar.add_cascade(label="Administrateur", menu=admin_menu)
 
@@ -280,9 +280,9 @@ class Pari:
         return data
 
     def parier(self):
-        Montant = entry_Bet.get()
-        Rencontre = "5"
-        Challenger = label_Choix_Vainqueur.get()
+        Montant = EntryPari.get()
+        Rencontre = "11"
+        Challenger = LabelChoixVainqueur.get()
         User = "6"
         print(Montant)
         rq = {
@@ -306,7 +306,7 @@ class Pari:
             tk.messagebox.showwarning(title="Erreur", message="Vous n'avez pas les fonds nécessaire")
 
     def challenger(self):
-        Rencontre = "5"
+        Rencontre = "11"
         rq = {
             "action": "afficher challenger",
             "rencontre": Rencontre,
@@ -383,7 +383,7 @@ ButtonPari = tk.Button(framePari, text="Parier", font=("Arial", 15), bg="white",
 class compte:
     def depot(self):
         print("Appel de depot")
-        Montant = Combobox_depot.get()
+        Montant = ComboboxDepot.get()
         User = "6"
         print(Montant)
         rq = {
@@ -590,6 +590,74 @@ for i in range(len(rencontreAdmin)):
     ButtonWinner = tk.Button(frameAdmin, text="Choisir un Vainqueur", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda: raise_frame(frameVainqueur))
     ButtonWinner.grid(row=i + 3, column=2)
 
+# =====================================================================
+# -------------------------Annulé Rencontre----------------------------
+# =====================================================================
+class cancel:
+    def rencontre(self):
+        rq = {
+                "action": "afficher rencontre",
+             }
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect(('192.168.1.86', 9999))
+        message = json.dumps(rq)
+        message_obj = donnees(message)
+        print(message_obj.action)
+        s.send(message.encode("ascii"))
+        data = s.recv(1024)
+        s.close()
+        print(repr(data), 'Reçue')
+        print(rq)
+        data = donnees(data)
+        return data
+    def annule(self):
+        idRencontre = idRencontrePariAdmin[ComboboxRencontrePariAdmin.current()]
+
+        rq = {
+            "action": "annuler rencontre",
+            "rencontre": idRencontre
+        }
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect(('192.168.1.86', 9999))
+        message = json.dumps(rq)
+        message_obj = donnees(message)
+        print(message_obj.action)
+        s.send(message.encode("ascii"))
+        data = s.recv(1024)
+        s.close()
+        print(repr(data), 'Reçue')
+        print(rq)
+        if ('success' in data.decode("ascii")):
+            tk.messagebox.showinfo(title="Succès", message="Annulation de la rencontre effectué avec succès.")
+        elif ('fail' in data.decode("ascii")):
+            tk.messagebox.showwarning(title="Erreur", message="Echec de l'annulation de la rencontre.")
+
+cancel = cancel()
+
+frameCancel = tk.Frame(root, bg="#87CEFA", bd=1)
+
+LabelTitleAnnulation = tk.Label(frameCancel, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
+LabelTitleAnnulation.grid(row=0, column=0)
+
+RencontrePariAdmin = cancel.rencontre().rencontre
+nomRencontrePariAdmin = []
+idRencontrePariAdmin = []
+for rencontre in RencontrePariAdmin:
+    rencontre = donnees(json.dumps(rencontre))
+    nomRencontrePariAdmin.append(rencontre.nom)
+    idRencontrePariAdmin.append(rencontre.id)
+
+if idRencontrePariAdmin == []:
+    nomRencontrePariAdmin = [""]
+    idRencontrePariAdmin = [""]
+ComboboxRencontrePariAdmin = ttk.Combobox(frameCancel, values=nomRencontrePariAdmin, state="readonly")
+print(dict(ComboboxRencontrePariAdmin))
+ComboboxRencontrePariAdmin.current(0)
+ComboboxRencontrePariAdmin.grid(row=1, column=0)
+
+ButtonAnnuleRencontre = tk.Button(frameCancel, text="Annuler", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda : cancel.annule())
+ButtonAnnuleRencontre.grid(row=2, column=0)
+
 #======================================================================
 #---------------------------Ajout Rencontre----------------------------
 #======================================================================
@@ -635,11 +703,10 @@ class Rencontre:
 
     def ajoutRencontre(self):
 
-
         discipline = idDiscipline[LabelChoixDiscipline.current()]
         rencontre = EntryNomRencontre.get()
-        challenger1 = idChallenger[LabelChoixChallenger1.current()]
-        challenger2 = idChallenger2[LabelChoixChallenger2.current()]
+        challenger1 = idChallengerAdmin[LabelChoixChallenger1.current()]
+        challenger2 = idChallengerAdmin2[LabelChoixChallenger2.current()]
         cote_challenger1 = EntryCoteChallenger1.get()
         cote_challenger2 =  EntryCoteChallenger2.get()
         date = EntryDateRencontre.get()
@@ -660,7 +727,7 @@ class Rencontre:
             else :
                 rq = {
                     "action": "ajout rencontre",
-                    "admin" : 3,
+                    "admin" : 7,
                     "discipline": discipline,
                     "rencontre": rencontre,
                     "challenger1": challenger1,
@@ -677,13 +744,23 @@ class Rencontre:
                 message_obj = donnees(message)
                 print(message_obj.action)
                 s.send(message.encode("ascii"))
+                data = s.recv(1024)
+                s.close()
+                print(repr(data), 'Reçue')
                 print(rq)
-
+                if ('success' in data.decode("ascii")):
+                    tk.messagebox.showinfo(title="Succès", message="Ajout de la rencontre effectué avec succès.")
+                elif ('fail' in data.decode("ascii")):
+                    tk.messagebox.showwarning(title="Erreur", message="Echec de l'ajout de la rencontre.")
 ajout = Rencontre()
 
 frameAjout = tk.Frame(root, bg="#87CEFA", bd=1)
 ## Ajout d'une rencontre
 #Nom rencontre
+
+LabelTitleRencontre = tk.Label(frameAjout, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
+LabelTitleRencontre.grid(row=0, column=5)
+
 LabelNomRencontre = tk.Label(frameAjout, text="Nom de la Rencontre :", font=("Arial", 15), bg="#87CEFA", fg="white")
 LabelNomRencontre.grid(row=3, column=4)
 EntryNomRencontre = tk.Entry(frameAjout, font=("Arial", 15), bg="#87CEFA", fg="white")
@@ -761,7 +838,7 @@ LabelChoixDiscipline.grid(row=5, column=6)
 
 
 #bouton ajout
-ButtonAjoutRencontre = tk.Button(frameAjout, text="Ajouter", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda : admin.ajoutRencontre())
+ButtonAjoutRencontre = tk.Button(frameAjout, text="Ajouter", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda : ajout.ajoutRencontre())
 ButtonAjoutRencontre.grid(row=12, column=5)
 
 #======================================================================
@@ -839,7 +916,7 @@ btnVainqueur.grid(row=3, column=0)
 #-------------Assemblage des frames, génération de la page-------------
 #======================================================================
 
-for frame in (frameLogin, frameUser, frameCompte, framePari, frameAdmin, frameVainqueur, frameRegister, frameAjout):
+for frame in (frameLogin, frameUser, frameCompte, framePari, frameAdmin, frameVainqueur, frameRegister, frameAjout, frameCancel):
     frame.grid(row=0, column=0, sticky='news')
 
 raise_frame(frameLogin)
