@@ -12,7 +12,7 @@ def parier():
     Montant = entry_Bet.get()
     Rencontre = "1"
     Challenger = label_Choix_Vainqueur.get()
-    User = "1"
+    User = "6"
     print(Montant)
     rq = {
         "action": "parier",
