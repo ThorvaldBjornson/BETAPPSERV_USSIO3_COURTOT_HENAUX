@@ -40,8 +40,8 @@ root.config(menu=Menu_bar)
 #-------------------------Frame Login----------------------------------
 #======================================================================
 def connect():
-    User = entry_login.get()
-    password = entry_mdp.get()
+    User = EntryLogin.get()
+    password = EntryPassword.get()
     rq = {
             "action" : "connection",
             "login"   : User,
@@ -65,36 +65,36 @@ def connect():
 frameLogin = tk.Frame(root, bg="#87CEFA", bd=1)
 
 #Initialisation du titre
-label_title_accueil = tk.Label(frameLogin, text="Bienvenue sur BetAppServeur", font=("Arial", 40), bg="#87CEFA", fg="white")
-label_title_accueil.grid(row=0, column=0)
+LabelTitleAccueil = tk.Label(frameLogin, text="Bienvenue sur BetAppServeur", font=("Arial", 40), bg="#87CEFA", fg="white")
+LabelTitleAccueil.grid(row=0, column=0)
 
 #Initialisation du formulaire de Login
-label_login = tk.Label(frameLogin, text="Login", font=("Arial", 20), bg="#87CEFA", fg="white")
-label_login.grid(row=1, column=0)
+LabelLogin = tk.Label(frameLogin, text="Login", font=("Arial", 20), bg="#87CEFA", fg="white")
+LabelLogin.grid(row=1, column=0)
 
-entry_login = tk.Entry(frameLogin, font=("Arial", 20), bg="#87CEFA", fg="white")
-entry_login.grid(row=2, column=0)
+EntryLogin = tk.Entry(frameLogin, font=("Arial", 20), bg="#87CEFA", fg="white")
+EntryLogin.grid(row=2, column=0)
 
-label_mdp = tk.Label(frameLogin, text="Mot de Passe", font=("Arial", 20), bg="#87CEFA", fg="white")
-label_mdp.grid(row=3, column=0)
+LabelMdp = tk.Label(frameLogin, text="Mot de Passe", font=("Arial", 20), bg="#87CEFA", fg="white")
+LabelMdp.grid(row=3, column=0)
 
-entry_mdp = tk.Entry(frameLogin, font=("Arial", 20), bg="#87CEFA", fg="white", show='*')
-entry_mdp.grid(row=4, column=0)
+EntryPassword = tk.Entry(frameLogin, font=("Arial", 20), bg="#87CEFA", fg="white", show='*')
+EntryPassword.grid(row=4, column=0)
 
-button_connexion = tk.Button(frameLogin, text="Login", font=("Arial", 20), bg="#DCDCDC", fg="white", command=connect)
-button_connexion.grid(row=5, column=0)
+ButtonConnexion = tk.Button(frameLogin, text="Login", font=("Arial", 20), bg="#DCDCDC", fg="white", command=connect)
+ButtonConnexion.grid(row=5, column=0)
 
-button_go_to_register = tk.Button(frameLogin, text="S'enregistrer", font=("Arial", 20), bg="#DCDCDC", fg="white", command=lambda: raise_frame(frameRegister) )
-button_go_to_register.grid(row=6, column=0)
+ButtonGoToRegister = tk.Button(frameLogin, text="S'enregistrer", font=("Arial", 20), bg="#DCDCDC", fg="white", command=lambda: raise_frame(frameRegister) )
+ButtonGoToRegister.grid(row=6, column=0)
 
 #======================================================================
 #-------------------------Frame Login----------------------------------
 #======================================================================
 def register():
-    User = entry_register.get()
-    if entry_register_mdp.get() != entry_confirm_mdp.get():
+    User = EntryRegister.get()
+    if LabelRegisterPassword.get() != EntryConfirmPassword.get():
         tk.messagebox.showwarning(title="Erreur", message="Vous n'avez pas entrez les mêmes mot de passe.")
-    password = entry_register_mdp.get()
+    password = EntryRegisterPassword.get()
     rq = {
             "action" : "register",
             "login"   : User,
@@ -119,29 +119,29 @@ def register():
 
 frameRegister = tk.Frame(root, bg="#87CEFA", bd=1)
 
-label_title = tk.Label(frameRegister, text="Bienvenue sur BetAppServeur", font=("Arial", 40), bg="#87CEFA", fg="white")
-label_title.grid(row=0, column=0)
+LabelTitleRegister = tk.Label(frameRegister, text="Bienvenue sur BetAppServeur", font=("Arial", 40), bg="#87CEFA", fg="white")
+LabelTitleRegister.grid(row=0, column=0)
 #Initialisation du formulaire de Register
-label_register = tk.Label(frameRegister, text="Identifiant", font=("Arial", 20), bg="#87CEFA", fg="white")
-label_register.grid(row=1, column=0)
+LabelRegister = tk.Label(frameRegister, text="Identifiant", font=("Arial", 20), bg="#87CEFA", fg="white")
+LabelRegister.grid(row=1, column=0)
 
-entry_register = tk.Entry(frameRegister, font=("Arial", 20), bg="#87CEFA", fg="white")
-entry_register.grid(row=2, column=0)
+EntryRegister = tk.Entry(frameRegister, font=("Arial", 20), bg="#87CEFA", fg="white")
+EntryRegister.grid(row=2, column=0)
 
-label_register_mdp = tk.Label(frameRegister, text="Mot de Passe", font=("Arial", 20), bg="#87CEFA", fg="white")
-label_register_mdp.grid(row=3, column=0)
+LabelRegisterPassword = tk.Label(frameRegister, text="Mot de Passe", font=("Arial", 20), bg="#87CEFA", fg="white")
+LabelRegisterPassword.grid(row=3, column=0)
 
-entry_register_mdp = tk.Entry(frameRegister, font=("Arial", 20), bg="#87CEFA", fg="white", show='*')
-entry_register_mdp.grid(row=4, column=0)
+EntryRegisterPassword = tk.Entry(frameRegister, font=("Arial", 20), bg="#87CEFA", fg="white", show='*')
+EntryRegisterPassword.grid(row=4, column=0)
 
-label_confirm_mdp = tk.Label(frameRegister, text="Confirmer le Mot de Passe", font=("Arial", 20), bg="#87CEFA", fg="white")
-label_confirm_mdp.grid(row=5, column=0)
+LabelConfirmPassword = tk.Label(frameRegister, text="Confirmer le Mot de Passe", font=("Arial", 20), bg="#87CEFA", fg="white")
+LabelConfirmPassword.grid(row=5, column=0)
 
-entry_confirm_mdp = tk.Entry(frameRegister, font=("Arial", 20), bg="#87CEFA", fg="white", show='*')
-entry_confirm_mdp.grid(row=6, column=0)
+EntryConfirmPassword = tk.Entry(frameRegister, font=("Arial", 20), bg="#87CEFA", fg="white", show='*')
+EntryConfirmPassword.grid(row=6, column=0)
 
-register_button = tk.Button(frameRegister, text="S'enregistrer", font=("Arial", 20), bg="#DCDCDC", fg="white", command=register)
-register_button.grid(row=7, column=0)
+ButtonRegister = tk.Button(frameRegister, text="S'enregistrer", font=("Arial", 20), bg="#DCDCDC", fg="white", command=register)
+ButtonRegister.grid(row=7, column=0)
 
 #======================================================================
 #-------------------------Frame Utilisateur----------------------------
@@ -202,27 +202,27 @@ class utilisateur:
         print(rq)
         data = donnees(data)
         return data
-ut = utilisateur()
-#Mise en place de la Frame
 
+ut = utilisateur()
+
+#Mise en place de la Frame
 frameUser= tk.Frame(root, bg="#87CEFA", bd=1)
 
-
 #Initialisation des titre
-label_title = tk.Label(frameUser, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
-label_title.grid(row=0, column=2)
+LabelTitleUser = tk.Label(frameUser, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
+LabelTitleUser.grid(row=0, column=2)
 
-label_Rencontre = tk.Label(frameUser, text="Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
-label_Rencontre.grid(row=1, column=1)
+LabelTitleRencontre = tk.Label(frameUser, text="Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
+LabelTitleRencontre.grid(row=1, column=1)
 
-label_Historique = tk.Label(frameUser, text="Historique des gains", font=("Arial", 20), bg="#87CEFA", fg="white")
-label_Historique.grid(row=1, column=3)
+LabelTitleHistorique = tk.Label(frameUser, text="Historique des gains", font=("Arial", 20), bg="#87CEFA", fg="white")
+LabelTitleHistorique.grid(row=1, column=3)
 
 #Récuperation identité
 User = "Olivier Flauzac"
 
-label_User = tk.Label(frameUser, text=User, font=("Arial", 15), bg="#87CEFA", fg="white")
-label_User.grid(row=0, column=0)
+LabelUser = tk.Label(frameUser, text=User, font=("Arial", 15), bg="#87CEFA", fg="white")
+LabelUser.grid(row=0, column=0)
 
 #feed + affichage des rencontres
 rencontre = ut.rencontre().rencontre
@@ -230,10 +230,10 @@ for i in range(len(rencontre)):
     r = donnees(json.dumps(rencontre[i]))
     values = r.nom + " le " + r.date + " à " + r.lieu
 
-    label_Rencontre = tk.Label(frameUser, text=values, font=("Arial", 15), bg="#87CEFA", fg="white")
-    label_Rencontre.grid(row=i+2, column=0)
-    log_button = tk.Button(frameUser, text="Parier", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:raise_frame(framePari))
-    log_button.grid(row=i+2, column=1)
+    LabelRencontre = tk.Label(frameUser, text=values, font=("Arial", 15), bg="#87CEFA", fg="white")
+    LabelRencontre.grid(row=i+2, column=0)
+    ButtonParier = tk.Button(frameUser, text="Parier", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:raise_frame(framePari))
+    ButtonParier.grid(row=i+2, column=1)
 
 #feed + affichage de l'historique
 historique = ut.historique().historique
@@ -241,13 +241,13 @@ for i in range(len(historique)):
     h = donnees(json.dumps(historique[i]))
     v = str(h.resultat) + " €"
 
-    label_Rencontre = tk.Label(frameUser, text=v, font=("Arial", 15), bg="#87CEFA", fg="white")
-    label_Rencontre.grid(row=i + 2, column=3)
+    LabelHistorique = tk.Label(frameUser, text=v, font=("Arial", 15), bg="#87CEFA", fg="white")
+    LabelHistorique.grid(row=i + 2, column=3)
 
 #Affichage des fonds
 Fond = " Fonds : " + str(ut.fond().fonds) + " €"
-label_Fond = tk.Label(frameUser, text=Fond, font=("Arial", 15), bg="#87CEFA", fg="white")
-label_Fond.grid(row=0, column=3)
+LabelFond = tk.Label(frameUser, text=Fond, font=("Arial", 15), bg="#87CEFA", fg="white")
+LabelFond.grid(row=0, column=3)
 
 #======================================================================
 #-------------------------Frame Pari-----------------------------------
@@ -297,33 +297,35 @@ class Pari:
         print(rq)
         data = donnees(data)
         return data
+
 pari = Pari()
+
 #Mise en place de la Frame
 framePari = tk.Frame(root, bg="#87CEFA", bd=1)
 
 #Initialisation des titre
-label_title = tk.Label(framePari, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
-label_title.grid(row=0, column=2)
+LabelTitrePari = tk.Label(framePari, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
+LabelTitrePari.grid(row=0, column=2)
 
-label_Rencontre = tk.Label(framePari, text="Rencontre", font=("Arial", 15), bg="#87CEFA", fg="white")
-label_Rencontre.grid(row=1, column=1)
+LabelTitreRencontre = tk.Label(framePari, text="Rencontre", font=("Arial", 15), bg="#87CEFA", fg="white")
+LabelTitreRencontre.grid(row=1, column=1)
 
-val = pari.challenger().challengers
-print(val)
+ValeurChallenger = pari.challenger().challengers
+print(ValeurChallenger)
 nomChall = []
-for challenger in val:
+for challenger in ValeurChallenger:
     challenger = donnees(json.dumps(challenger))
     nomChall.append(challenger.nom)
 
-label_Choix_Vainqueur = ttk.Combobox(framePari, values=nomChall, state="readonly")
-print(dict(label_Choix_Vainqueur))
-label_Choix_Vainqueur.current(0)
-label_Choix_Vainqueur.grid(row=2, column=2)
+LabelChoixVainqueur = ttk.Combobox(framePari, values=nomChall, state="readonly")
+print(dict(LabelChoixVainqueur))
+LabelChoixVainqueur.current(0)
+LabelChoixVainqueur.grid(row=2, column=2)
 
-entry_Bet = tk.Entry(framePari, font=("Arial", 15), bg="#87CEFA", fg="white")
-entry_Bet.grid(row=1, column=3)
+EntryPari = tk.Entry(framePari, font=("Arial", 15), bg="#87CEFA", fg="white")
+EntryPari.grid(row=1, column=3)
 
-bet_Button = tk.Button(framePari, text="Parier", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:pari.parier()).grid(row=3, column=2)
+ButtonPari = tk.Button(framePari, text="Parier", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:pari.parier()).grid(row=3, column=2)
 
 #======================================================================
 #-----------------------Frame visualisation compte---------------------
@@ -407,55 +409,57 @@ class compte:
         print(rq)
         data = donnees(data)
         return data
+
 compteUser = compte()
+
 #Mise en place de la Frame
 frameCompte = tk.Frame(root, bg="#87CEFA", bd=1)
 
 #Initialisation des titre
-label_title = tk.Label(frameCompte, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
-label_title.grid(row=0, column=2)
+LabelTitreCompte = tk.Label(frameCompte, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
+LabelTitreCompte.grid(row=0, column=2)
 
-label_Statistique = tk.Label(frameCompte, text="Statistique", font=("Arial", 20), bg="#87CEFA", fg="white")
-label_Statistique.grid(row=1, column=2)
+LabelStatistique = tk.Label(frameCompte, text="Statistique", font=("Arial", 20), bg="#87CEFA", fg="white")
+LabelStatistique.grid(row=1, column=2)
 
-label_Historique = tk.Label(frameCompte, text="Historique des gains", font=("Arial", 20), bg="#87CEFA", fg="white")
-label_Historique.grid(row=1, column=1)
+LabelHistorique = tk.Label(frameCompte, text="Historique des gains", font=("Arial", 20), bg="#87CEFA", fg="white")
+LabelHistorique.grid(row=1, column=1)
 
 #Affichage des fonds
 Fond = " Fonds : " + str(compteUser.fond().fonds) + " €"
-label_Fond = tk.Label(frameCompte, text=Fond, font=("Arial", 15), bg="#87CEFA", fg="white")
-label_Fond.grid(row=1, column=3)
+LabelFond = tk.Label(frameCompte, text=Fond, font=("Arial", 15), bg="#87CEFA", fg="white")
+LabelFond.grid(row=1, column=3)
 
 #Récuperation identité
 User = "Olivier Flauzac"
 
-label_User = tk.Label(frameCompte, text=User, font=("Arial", 15), bg="#87CEFA", fg="white")
-label_User.grid(row=0, column=0)
+LabelUser = tk.Label(frameCompte, text=User, font=("Arial", 15), bg="#87CEFA", fg="white")
+LabelUser.grid(row=0, column=0)
 
 #feed + affichage de l'historique
-historique = compteUser.historique().historique
-for i in range(len(historique)):
-    h = donnees(json.dumps(historique[i]))
-    v = h.rencontre + " " + str(h.resultat) + " €"
+Historique = compteUser.historique().historique
+for i in range(len(Historique)):
+    h = donnees(json.dumps(Historique[i]))
+    valueHistorique = h.rencontre + " " + str(h.resultat) + " €"
 
-    label_Rencontre = tk.Label(frameCompte, text=v, font=("Arial", 15), bg="#87CEFA", fg="white")
-    label_Rencontre.grid(row=i + 2, column=1)
+    LabelRencontreUser = tk.Label(frameCompte, text=valueHistorique, font=("Arial", 15), bg="#87CEFA", fg="white")
+    LabelRencontreUser.grid(row=i + 2, column=1)
 
 
 #Affichage des statistiques
-pourcentVictoire = str(compteUser.statistiques().Ratio) + "%"
-label_pourcentVictoire = tk.Label(frameCompte, text="Victoire : " + pourcentVictoire, font=("Arial", 15), bg="#87CEFA", fg="white")
-label_pourcentVictoire.grid(row=2, column=2)
+StatPourcentVictoire = str(compteUser.statistiques().Ratio) + "%"
+LabelStatPourcentVictoire = tk.Label(frameCompte, text="Victoire : " + StatPourcentVictoire, font=("Arial", 15), bg="#87CEFA", fg="white")
+LabelStatPourcentVictoire.grid(row=2, column=2)
 
-TotalGains = str(compteUser.statistiques().totalGain) + " €"
-label_Statistique = tk.Label(frameCompte, text="Total des Gains : " + TotalGains, font=("Arial", 15), bg="#87CEFA", fg="white")
-label_Statistique.grid(row=3, column=2)
+StatTotalGains = str(compteUser.statistiques().totalGain) + " €"
+LabelStatTotalGains = tk.Label(frameCompte, text="Total des Gains : " + StatTotalGains, font=("Arial", 15), bg="#87CEFA", fg="white")
+LabelStatTotalGains.grid(row=3, column=2)
 
-NbParis = str(compteUser.statistiques().totalParis)
-label_Statistique = tk.Label(frameCompte, text="Nombre de paris : " + NbParis, font=("Arial", 15), bg="#87CEFA", fg="white")
-label_Statistique.grid(row=4, column=2)
+StatNombreParis = str(compteUser.statistiques().totalParis)
+LabelStatNombreParis = tk.Label(frameCompte, text="Nombre de paris : " + StatNombreParis, font=("Arial", 15), bg="#87CEFA", fg="white")
+LabelStatNombreParis.grid(row=4, column=2)
 
-Combobox_depot = ttk.Combobox(frameCompte,
+ComboboxDepot = ttk.Combobox(frameCompte,
                             values=[
                                     "10",
                                     "20",
@@ -464,12 +468,12 @@ Combobox_depot = ttk.Combobox(frameCompte,
                                     "200",
                                     "500",
                                     ], state="readonly")
-print(dict(Combobox_depot))
-Combobox_depot.current(1)
-Combobox_depot.grid(row=5, column=2)
+print(dict(ComboboxDepot))
+ComboboxDepot.current(1)
+ComboboxDepot.grid(row=5, column=2)
 
-depot_button = tk.Button(frameCompte, text="Déposer", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:compteUser.depot())
-depot_button.grid(row=6, column=2)
+ButtonDepot = tk.Button(frameCompte, text="Déposer", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:compteUser.depot())
+ButtonDepot.grid(row=6, column=2)
 
 
 #======================================================================
@@ -530,14 +534,14 @@ class admin:
     def ajoutRencontre(self):
 
 
-        discipline = idDiscipline[label_Choix_Discipline.current()]
-        rencontre = entry_Nom_Rencontre.get()
-        challenger1 = idChallenger[label_Choix_Challenger1.current()]
-        challenger2 = idChallenger2[label_Choix_Challenger2.current()]
-        cote_challenger1 = entry_cote_challenger1.get()
-        cote_challenger2 =  entry_cote_challenger2.get()
-        date = entry_Date_Rencontre.get()
-        lieu = entry_Lieu_Rencontre.get()
+        discipline = idDiscipline[LabelChoixDiscipline.current()]
+        rencontre = EntryNomRencontre.get()
+        challenger1 = idChallenger[LabelChoixChallenger1.current()]
+        challenger2 = idChallenger2[LabelChoixChallenger2.current()]
+        cote_challenger1 = EntryCoteChallenger1.get()
+        cote_challenger2 =  EntryCoteChallenger2.get()
+        date = EntryDateRencontre.get()
+        lieu = EntryLieuRencontre.get()
         print(discipline)
         print(rencontre)
         print(challenger1)
@@ -574,105 +578,104 @@ class admin:
                 print(rq)
 
 admin = admin()
+
 #Mise en place de la Frame
 frameAdmin = tk.Frame(root, bg="#87CEFA", bd=1)
 
-
 #Initialisation des titre
-label_title = tk.Label(frameAdmin, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
-label_title.grid(row=0, column=3)
+LabelTitleAdmin = tk.Label(frameAdmin, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
+LabelTitleAdmin.grid(row=0, column=3)
 
-label_Rencontre = tk.Label(frameAdmin, text="Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
-label_Rencontre.grid(row=2, column=1, columnspan=2)
+LabelTitleRencontreAdmin = tk.Label(frameAdmin, text="Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
+LabelTitleRencontreAdmin.grid(row=2, column=1, columnspan=2)
 
-label_Ajout_Rencontre = tk.Label(frameAdmin, text="Ajouter Une Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
-label_Ajout_Rencontre.grid(row=2, column=5)
+LabelAjoutRencontre = tk.Label(frameAdmin, text="Ajouter Une Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
+LabelAjoutRencontre.grid(row=2, column=5)
 
 #Récuperation identité
 User = "Admin"
 
-label_User = tk.Label(frameAdmin, text=User, font=("Arial", 15), bg="#87CEFA", fg="white")
-label_User.grid(row=0, column=0)
+LabelUserAdmin = tk.Label(frameAdmin, text=User, font=("Arial", 15), bg="#87CEFA", fg="white")
+LabelUserAdmin.grid(row=0, column=0)
 
 ## Rencontre
-
 #feed + affichage des rencontres
-rencontre = admin.rencontre().rencontre
-for i in range(len(rencontre)):
-    r = donnees(json.dumps(rencontre[i]))
-    values = r.nom + " le " + r.date + " à " + r.lieu
+rencontreAdmin = admin.rencontre().rencontre
+for i in range(len(rencontreAdmin)):
+    r = donnees(json.dumps(rencontreAdmin[i]))
+    valuesRencontreAdmin = r.nom + " le " + r.date + " à " + r.lieu
 
-    label_Rencontre = tk.Label(frameAdmin, text=values, font=("Arial", 15), bg="#87CEFA", fg="white")
-    label_Rencontre.grid(row=i+3, column=0)
-    Cancel_button = tk.Button(frameAdmin, text="Annulé", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:raise_frame(framePari))
-    Cancel_button.grid(row=i+3, column=1)
-    Winner_button = tk.Button(frameAdmin, text="Choisir un Vainqueur", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda: raise_frame(frameVainqueur))
-    Winner_button.grid(row=i + 3, column=2)
+    labelRencontreAdmin = tk.Label(frameAdmin, text=valuesRencontreAdmin, font=("Arial", 15), bg="#87CEFA", fg="white")
+    labelRencontreAdmin.grid(row=i+3, column=0)
+    ButtonCancel = tk.Button(frameAdmin, text="Annulé", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:raise_frame(framePari))
+    ButtonCancel.grid(row=i+3, column=1)
+    ButtonWinner = tk.Button(frameAdmin, text="Choisir un Vainqueur", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda: raise_frame(frameVainqueur))
+    ButtonWinner.grid(row=i + 3, column=2)
 
 ## Ajout d'une rencontre
 #Nom rencontre
-label_Nom_Rencontre = tk.Label(frameAdmin, text="Nom de la Rencontre :", font=("Arial", 15), bg="#87CEFA", fg="white")
-label_Nom_Rencontre.grid(row=3, column=4)
-entry_Nom_Rencontre = tk.Entry(frameAdmin, font=("Arial", 15), bg="#87CEFA", fg="white")
-entry_Nom_Rencontre.grid(row=4, column=4)
+LabelNomRencontre = tk.Label(frameAdmin, text="Nom de la Rencontre :", font=("Arial", 15), bg="#87CEFA", fg="white")
+LabelNomRencontre.grid(row=3, column=4)
+EntryNomRencontre = tk.Entry(frameAdmin, font=("Arial", 15), bg="#87CEFA", fg="white")
+EntryNomRencontre.grid(row=4, column=4)
 
 #Date Rencontre
-label_Date_Rencontre = tk.Label(frameAdmin, text="Date de la Rencontre :", font=("Arial", 15), bg="#87CEFA", fg="white")
-label_Date_Rencontre.grid(row=5, column=4)
-entry_Date_Rencontre = tk.Entry(frameAdmin, font=("Arial", 15), bg="#87CEFA", fg="white")
-entry_Date_Rencontre.grid(row=6, column=4)
+LabelDateRencontre = tk.Label(frameAdmin, text="Date de la Rencontre :", font=("Arial", 15), bg="#87CEFA", fg="white")
+LabelDateRencontre.grid(row=5, column=4)
+EntryDateRencontre = tk.Entry(frameAdmin, font=("Arial", 15), bg="#87CEFA", fg="white")
+EntryDateRencontre.grid(row=6, column=4)
 
 #Lieu Rencontre
-label_Lieu_Rencontre = tk.Label(frameAdmin, text="Lieux de la Rencontre :", font=("Arial", 15), bg="#87CEFA", fg="white")
-label_Lieu_Rencontre.grid(row=7, column=4)
-entry_Lieu_Rencontre = tk.Entry(frameAdmin, font=("Arial", 15), bg="#87CEFA", fg="white")
-entry_Lieu_Rencontre.grid(row=8, column=4)
+LabelLieuRencontre = tk.Label(frameAdmin, text="Lieux de la Rencontre :", font=("Arial", 15), bg="#87CEFA", fg="white")
+LabelLieuRencontre.grid(row=7, column=4)
+EntryLieuRencontre = tk.Entry(frameAdmin, font=("Arial", 15), bg="#87CEFA", fg="white")
+EntryLieuRencontre.grid(row=8, column=4)
 
 #Challenger
-v = admin.challenger().challengers
-nomChall = []
-idChallenger = []
-for challenger in v:
+valeurChallengerAdmin = admin.challenger().challengers
+nomChallAdmin = []
+idChallengerAdmin = []
+for challenger in valeurChallengerAdmin:
     challenger = donnees(json.dumps(challenger))
-    nomChall.append(challenger.nom)
-    idChallenger.append(challenger.id)
+    nomChallAdmin.append(challenger.nom)
+    idChallengerAdmin.append(challenger.id)
 
-label_Choix_Challenger1 = ttk.Combobox(frameAdmin, values=nomChall, state="readonly")
-print(dict(label_Choix_Challenger1))
-label_Choix_Challenger1.current(0)
-label_Choix_Challenger1.grid(row=9, column=4)
+LabelChoixChallenger1 = ttk.Combobox(frameAdmin, values=nomChallAdmin, state="readonly")
+print(dict(LabelChoixChallenger1))
+LabelChoixChallenger1.current(0)
+LabelChoixChallenger1.grid(row=9, column=4)
 
-label_cote_challenger1 = tk.Label(frameAdmin, text="Cote du challenger :", font=("Arial", 17), bg="#87CEFA", fg="white")
-label_cote_challenger1.grid(row=10, column=4)
+LabelCoteChallenger1 = tk.Label(frameAdmin, text="Cote du challenger :", font=("Arial", 17), bg="#87CEFA", fg="white")
+LabelCoteChallenger1.grid(row=10, column=4)
 
-entry_cote_challenger1 = tk.Entry(frameAdmin, font=("Arial", 15), bg="#87CEFA", fg="white")
-entry_cote_challenger1.grid(row=11, column=4)
+EntryCoteChallenger1 = tk.Entry(frameAdmin, font=("Arial", 15), bg="#87CEFA", fg="white")
+EntryCoteChallenger1.grid(row=11, column=4)
 
-label_vs = tk.Label(frameAdmin, text="VS", font=("Arial", 17), bg="#87CEFA", fg="white")
-label_vs.grid(row=9, column=5)
+LabelVs = tk.Label(frameAdmin, text="VS", font=("Arial", 17), bg="#87CEFA", fg="white")
+LabelVs.grid(row=9, column=5)
 
-va = admin.challenger().challengers
-nomChall2 = []
-idChallenger2 = []
-for challenger in va:
+valeurChallenger2Admin = admin.challenger().challengers
+nomChallAdmin2 = []
+idChallengerAdmin2 = []
+for challenger in valeurChallenger2Admin:
     challenger = donnees(json.dumps(challenger))
-    nomChall2.append(challenger.nom)
-    idChallenger2.append(challenger.id)
+    nomChallAdmin2.append(challenger.nom)
+    idChallengerAdmin2.append(challenger.id)
 
-label_Choix_Challenger2 = ttk.Combobox(frameAdmin, values=nomChall, state="readonly")
-print(dict(label_Choix_Challenger2))
-label_Choix_Challenger2.current(0)
-label_Choix_Challenger2.grid(row=9, column=6)
+LabelChoixChallenger2 = ttk.Combobox(frameAdmin, values=nomChallAdmin2, state="readonly")
+print(dict(LabelChoixChallenger2))
+LabelChoixChallenger2.current(0)
+LabelChoixChallenger2.grid(row=9, column=6)
 
-label_cote_challenger2 = tk.Label(frameAdmin, text="Cote du challenger :", font=("Arial", 17), bg="#87CEFA", fg="white")
-label_cote_challenger2.grid(row=10, column=6)
+LabelCoteChallenger2 = tk.Label(frameAdmin, text="Cote du challenger :", font=("Arial", 17), bg="#87CEFA", fg="white")
+LabelCoteChallenger2.grid(row=10, column=6)
 
-entry_cote_challenger2 = tk.Entry(frameAdmin, font=("Arial", 15), bg="#87CEFA", fg="white")
-entry_cote_challenger2.grid(row=11, column=6)
+EntryCoteChallenger2 = tk.Entry(frameAdmin, font=("Arial", 15), bg="#87CEFA", fg="white")
+EntryCoteChallenger2.grid(row=11, column=6)
 
 #Discipline
-label_Discipline = tk.Label(frameAdmin, text="Choix de la Discipline :", font=("Arial", 15), bg="#87CEFA", fg="white")
-label_Discipline.grid(row=4, column=6)
+LabelDiscipline = tk.Label(frameAdmin, text="Choix de la Discipline :", font=("Arial", 15), bg="#87CEFA", fg="white")
+LabelDiscipline.grid(row=4, column=6)
 valueDiscipline = admin.discipline().disciplines
 Discipline = []
 idDiscipline = []
@@ -681,15 +684,15 @@ for discipline in valueDiscipline:
     Discipline.append(discipline.nom)
     idDiscipline.append(discipline.id)
 
-label_Choix_Discipline = ttk.Combobox(frameAdmin, values=Discipline, state="readonly")
-print(dict(label_Choix_Discipline))
-label_Choix_Discipline.current(0)
-label_Choix_Discipline.grid(row=5, column=6)
+LabelChoixDiscipline = ttk.Combobox(frameAdmin, values=Discipline, state="readonly")
+print(dict(LabelChoixDiscipline))
+LabelChoixDiscipline.current(0)
+LabelChoixDiscipline.grid(row=5, column=6)
 
 
 #bouton ajout
-log_button = tk.Button(frameAdmin, text="Ajouter", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda : admin.ajoutRencontre())
-log_button.grid(row=12, column=5)
+ButtonAjoutRencontre = tk.Button(frameAdmin, text="Ajouter", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda : admin.ajoutRencontre())
+ButtonAjoutRencontre.grid(row=12, column=5)
 
 #======================================================================
 #---------------------------Choix Vainqueur----------------------------
@@ -720,7 +723,7 @@ class Vainqueur:
         rq = {
             "action": "choisir vainqueur",
             "rencontre": Rencontre,
-            "challenger": idVainqueur[cbbVainqueur.current()]
+            "challenger": idVainqueur[ComboboxVainqueur.current()]
         }
         print(idVainqueur[cbbVainqueur.current()])
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -736,11 +739,15 @@ class Vainqueur:
         return data
 
 vainqueur = Vainqueur()
+
 frameVainqueur= tk.Frame(root, bg="#87CEFA", bd=1)
 
+LabelTitleVainqueur = tk.Label(frameVainqueur, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
+LabelTitleVainqueur.grid(row=0, column=0)
+
 #Choix Rencontre
-label_Rencontre_Vainqueur = tk.Label(frameVainqueur, text="inserer combobox rencontre", font=("Arial", 15), bg="#87CEFA", fg="white")
-label_Rencontre_Vainqueur.grid(row=13, column=4)
+LabelRencontreVainqueur = tk.Label(frameVainqueur, text="Choisir un Vainqueur", font=("Arial", 15), bg="#87CEFA", fg="white")
+LabelRencontreVainqueur.grid(row=1, column=0)
 
 #Choix Vainqueur
 Challengers = admin.challenger().challengers
@@ -751,14 +758,14 @@ for challenger in Challengers:
     nomVainqueur.append(challenger.nom)
     idVainqueur.append(challenger.id)
 
-cbbVainqueur = ttk.Combobox(frameVainqueur, values=nomVainqueur, state="readonly")
-print(dict(label_Choix_Challenger1))
-cbbVainqueur.current(0)
-cbbVainqueur.grid(row=9, column=4)
+ComboboxVainqueur = ttk.Combobox(frameVainqueur, values=nomVainqueur, state="readonly")
+print(dict(ComboboxVainqueur))
+ComboboxVainqueur.current(0)
+ComboboxVainqueur.grid(row=2, column=0)
 
 #Bouton
 btnVainqueur = tk.Button(frameVainqueur, text="Ajouter", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda :vainqueur.envoiVainqueur())
-btnVainqueur.grid(row=14, column=5)
+btnVainqueur.grid(row=3, column=0)
 
 #======================================================================
 #-------------Assemblage des frames, génération de la page-------------
