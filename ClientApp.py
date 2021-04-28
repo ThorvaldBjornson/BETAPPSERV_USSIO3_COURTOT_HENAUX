@@ -65,7 +65,6 @@ def connect():
 frameLogin = tk.Frame(root, bg="#87CEFA", bd=1)
 
 #Initialisation du titre
-label_title = tk.Label(frameLogin, text="Bienvenue sur BetAppServeur", font=("Arial", 40), bg="#87CEFA", fg="white")
 label_title_accueil = tk.Label(frameLogin, text="Bienvenue sur BetAppServeur", font=("Arial", 40), bg="#87CEFA", fg="white")
 label_title_accueil.grid(row=0, column=0)
 
