@@ -31,7 +31,9 @@ Menu_bar.add_cascade(label="Action", menu=action_menu)
 
 
 admin_menu = tk.Menu(Menu_bar, tearoff=0)
-admin_menu.add_command(label="Administrer", command=lambda:raise_frame(frameAdmin))
+AjoutRencontre = tk.Menu(Menu_bar, tearoff=0)
+admin_menu.add_command(label="Accueil", command=lambda:raise_frame(frameRencontre))
+AjoutRencontre.add_command(label="Ajouter Une Rencontre", command=lambda:raise_frame(frameAjout))
 
 Menu_bar.add_cascade(label="Administrateur", menu=admin_menu)
 
@@ -249,7 +251,9 @@ for i in range(len(historique)):
     LabelHistorique.grid(row=i + 2, column=3)
 
 #Affichage des fonds
-Fond = " Fonds : " + str(ut.fond()) + " €"
+
+Fond = " Fonds : " + str(ut.fond().fonds) + " €"
+
 LabelFond = tk.Label(frameUser, text=Fond, font=("Arial", 15), bg="#87CEFA", fg="white")
 LabelFond.grid(row=0, column=3)
 
@@ -476,6 +480,7 @@ LabelHistorique.grid(row=1, column=1)
 
 #Affichage des fonds
 Fond = " Fonds : " + str(compteUser.fond()) + " €"
+
 LabelFond = tk.Label(frameCompte, text=Fond, font=("Arial", 15), bg="#87CEFA", fg="white")
 LabelFond.grid(row=1, column=3)
 
@@ -546,6 +551,46 @@ class admin:
         data = donnees(data)
         return data
 
+admin = admin()
+
+#Mise en place de la Frame
+frameAdmin = tk.Frame(root, bg="#87CEFA", bd=1)
+
+#Initialisation des titre
+LabelTitleAdmin = tk.Label(frameAdmin, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
+LabelTitleAdmin.grid(row=0, column=3)
+
+LabelTitleRencontreAdmin = tk.Label(frameAdmin, text="Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
+LabelTitleRencontreAdmin.grid(row=2, column=1, columnspan=2)
+
+LabelAjoutRencontre = tk.Label(frameAdmin, text="Ajouter Une Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
+LabelAjoutRencontre.grid(row=2, column=5)
+
+#Récuperation identité
+User = "Admin"
+
+LabelUserAdmin = tk.Label(frameAdmin, text=User, font=("Arial", 15), bg="#87CEFA", fg="white")
+LabelUserAdmin.grid(row=0, column=0)
+
+## Rencontre
+#feed + affichage des rencontres
+rencontreAdmin = admin.rencontre().rencontre
+for i in range(len(rencontreAdmin)):
+    r = donnees(json.dumps(rencontreAdmin[i]))
+    valuesRencontreAdmin = r.nom + " le " + r.date + " à " + r.lieu
+
+    labelRencontreAdmin = tk.Label(frameAdmin, text=valuesRencontreAdmin, font=("Arial", 15), bg="#87CEFA", fg="white")
+    labelRencontreAdmin.grid(row=i+3, column=0)
+    ButtonCancel = tk.Button(frameAdmin, text="Annulé", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:raise_frame(framePari))
+    ButtonCancel.grid(row=i+3, column=1)
+    ButtonWinner = tk.Button(frameAdmin, text="Choisir un Vainqueur", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda: raise_frame(frameVainqueur))
+    ButtonWinner.grid(row=i + 3, column=2)
+
+#======================================================================
+#---------------------------Ajout Rencontre----------------------------
+#======================================================================
+
+class Rencontre:
     def challenger(self):
         rq = {
             "action": "afficher all challenger"
@@ -626,40 +671,7 @@ class admin:
                 s.send(message.encode("ascii"))
                 print(rq)
 
-admin = admin()
-
-#Mise en place de la Frame
-frameAdmin = tk.Frame(root, bg="#87CEFA", bd=1)
-
-#Initialisation des titre
-LabelTitleAdmin = tk.Label(frameAdmin, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
-LabelTitleAdmin.grid(row=0, column=3)
-
-LabelTitleRencontreAdmin = tk.Label(frameAdmin, text="Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
-LabelTitleRencontreAdmin.grid(row=2, column=1, columnspan=2)
-
-LabelAjoutRencontre = tk.Label(frameAdmin, text="Ajouter Une Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
-LabelAjoutRencontre.grid(row=2, column=5)
-
-#Récuperation identité
-User = "Admin"
-
-LabelUserAdmin = tk.Label(frameAdmin, text=User, font=("Arial", 15), bg="#87CEFA", fg="white")
-LabelUserAdmin.grid(row=0, column=0)
-
-## Rencontre
-#feed + affichage des rencontres
-rencontreAdmin = admin.rencontre().rencontre
-for i in range(len(rencontreAdmin)):
-    r = donnees(json.dumps(rencontreAdmin[i]))
-    valuesRencontreAdmin = r.nom + " le " + r.date + " à " + r.lieu
-
-    labelRencontreAdmin = tk.Label(frameAdmin, text=valuesRencontreAdmin, font=("Arial", 15), bg="#87CEFA", fg="white")
-    labelRencontreAdmin.grid(row=i+3, column=0)
-    ButtonCancel = tk.Button(frameAdmin, text="Annulé", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:raise_frame(framePari))
-    ButtonCancel.grid(row=i+3, column=1)
-    ButtonWinner = tk.Button(frameAdmin, text="Choisir un Vainqueur", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda: raise_frame(frameVainqueur))
-    ButtonWinner.grid(row=i + 3, column=2)
+ajout = Rencontre()
 
 ## Ajout d'une rencontre
 #Nom rencontre
@@ -788,9 +800,7 @@ class Vainqueur:
         return data
 
 vainqueur = Vainqueur()
-
 frameVainqueur= tk.Frame(root, bg="#87CEFA", bd=1)
-
 LabelTitleVainqueur = tk.Label(frameVainqueur, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
 LabelTitleVainqueur.grid(row=0, column=0)
 
@@ -820,7 +830,7 @@ btnVainqueur.grid(row=3, column=0)
 #-------------Assemblage des frames, génération de la page-------------
 #======================================================================
 
-for frame in (frameLogin, frameUser, frameCompte, framePari, frameAdmin, frameVainqueur, frameRegister):
+for frame in (frameLogin, frameUser, frameCompte, framePari, frameAdmin, frameVainqueur, frameRegister, frameAjout):
     frame.grid(row=0, column=0, sticky='news')
 
 raise_frame(frameLogin)
