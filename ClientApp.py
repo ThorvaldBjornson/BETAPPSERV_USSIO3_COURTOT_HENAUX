@@ -111,8 +111,10 @@ def register():
     print(repr(data), 'Reçue')
     if('success' in data.decode("ascii")):
         raise_frame(frameUser)
-    else:
+    elif('login existant' in data.decode("ascii")):
         tk.messagebox.showwarning(title="Erreur", message="Cette identifiant existe déjà.")
+    else:
+        tk.messagebox.showwarning(title="Erreur", message="Erreur.")
 
 frameRegister = tk.Frame(root, bg="#87CEFA", bd=1)
 
