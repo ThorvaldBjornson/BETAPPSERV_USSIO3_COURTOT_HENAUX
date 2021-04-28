@@ -69,29 +69,29 @@ frameLogin = tk.Frame(root, bg="#87CEFA", bd=1)
 
 #Initialisation du titre
 LabelTitleAccueil = tk.Label(frameLogin, text="Bienvenue sur BetAppServeur", font=("Arial", 40), bg="#87CEFA", fg="white")
-LabelTitleAccueil.grid(row=0, column=0)
+LabelTitleAccueil.grid()
 
 #Initialisation du formulaire de Login
 LabelLogin = tk.Label(frameLogin, text="Login", font=("Arial", 20), bg="#87CEFA", fg="white")
-LabelLogin.grid(row=1, column=0)
+LabelLogin.grid()
 
 EntryLogin = tk.Entry(frameLogin, font=("Arial", 20), bg="#87CEFA", fg="white")
-EntryLogin.grid(row=2, column=0)
+EntryLogin.grid()
 
 LabelMdp = tk.Label(frameLogin, text="Mot de Passe", font=("Arial", 20), bg="#87CEFA", fg="white")
-LabelMdp.grid(row=3, column=0)
+LabelMdp.grid()
 
 EntryPassword = tk.Entry(frameLogin, font=("Arial", 20), bg="#87CEFA", fg="white", show='*')
-EntryPassword.grid(row=4, column=0)
+EntryPassword.grid()
 
 ButtonConnexion = tk.Button(frameLogin, text="Login", font=("Arial", 20), bg="#DCDCDC", fg="white", command=connect)
-ButtonConnexion.grid(row=5, column=0)
+ButtonConnexion.grid()
 
 ButtonGoToRegister = tk.Button(frameLogin, text="S'enregistrer", font=("Arial", 20), bg="#DCDCDC", fg="white", command=lambda: raise_frame(frameRegister) )
-ButtonGoToRegister.grid(row=6, column=0)
+ButtonGoToRegister.grid()
 
 #======================================================================
-#-------------------------Frame Login----------------------------------
+#------------------------Frame Register--------------------------------
 #======================================================================
 def register():
     User = EntryRegister.get()
@@ -217,10 +217,10 @@ LabelTitleUser = tk.Label(frameUser, text="BetApp", font=("Arial", 40), bg="#87C
 LabelTitleUser.grid(row=0, column=2)
 
 LabelTitleRencontre = tk.Label(frameUser, text="Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
-LabelTitleRencontre.grid(row=1, column=1)
+LabelTitleRencontre.grid(row=1, column=0)
 
 LabelTitleHistorique = tk.Label(frameUser, text="Historique des gains", font=("Arial", 20), bg="#87CEFA", fg="white")
-LabelTitleHistorique.grid(row=1, column=3)
+LabelTitleHistorique.grid(row=1, column=2)
 
 #Récuperation identité
 User = "Olivier Flauzac"
@@ -236,8 +236,8 @@ for i in range(len(rencontre)):
 
     LabelRencontre = tk.Label(frameUser, text=values, font=("Arial", 15), bg="#87CEFA", fg="white")
     LabelRencontre.grid(row=i+2, column=0)
-    ButtonParier = tk.Button(frameUser, text="Parier", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:raise_frame(framePari))
-    ButtonParier.grid(row=i+2, column=1)
+ButtonParier = tk.Button(frameUser, text="Parier", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:raise_frame(framePari))
+ButtonParier.grid(row=i+3, column=0)
 
 #feed + affichage de l'historique
 historique = ut.historique().historique
@@ -257,6 +257,23 @@ LabelFond.grid(row=0, column=3)
 #-------------------------Frame Pari-----------------------------------
 #======================================================================
 class Pari:
+    def rencontre(self):
+        rq = {
+                "action": "afficher rencontre",
+             }
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect(('192.168.1.86', 9999))
+        message = json.dumps(rq)
+        message_obj = donnees(message)
+        print(message_obj.action)
+        s.send(message.encode("ascii"))
+        data = s.recv(1024)
+        s.close()
+        print(repr(data), 'Reçue')
+        print(rq)
+        data = donnees(data)
+        return data
+
     def parier(self):
         Montant = entry_Bet.get()
         Rencontre = "5"
@@ -309,27 +326,48 @@ framePari = tk.Frame(root, bg="#87CEFA", bd=1)
 
 #Initialisation des titre
 LabelTitrePari = tk.Label(framePari, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
-LabelTitrePari.grid(row=0, column=2)
+LabelTitrePari.grid(row=0, column=0, columnspan=2)
 
-LabelTitreRencontre = tk.Label(framePari, text="Rencontre", font=("Arial", 15), bg="#87CEFA", fg="white")
-LabelTitreRencontre.grid(row=1, column=1)
+LabelTitreRencontre = tk.Label(framePari, text="Choisir une rencontre : ", font=("Arial", 15), bg="#87CEFA", fg="white")
+LabelTitreRencontre.grid(row=1, column=0)
+
+RencontrePari = pari.rencontre().rencontre
+nomRencontrePari = []
+idRencontrePari = []
+for rencontre in RencontrePari:
+    rencontre = donnees(json.dumps(rencontre))
+    nomRencontrePari.append(rencontre.nom)
+    idRencontrePari.append(rencontre.id)
+
+ComboboxRencontrePari = ttk.Combobox(framePari, values=nomRencontrePari, state="readonly")
+print(dict(ComboboxRencontrePari))
+ComboboxRencontrePari.current(0)
+ComboboxRencontrePari.grid(row=1, column=1)
 
 ValeurChallenger = pari.challenger().challengers
 print(ValeurChallenger)
-nomChall = [""]
+
+LabelChallengerPari = tk.Label(framePari, text="Choisir une challenger : ", font=("Arial", 15), bg="#87CEFA", fg="white")
+LabelChallengerPari.grid(row=2, column=0)
+
+nomChall = []
 for challenger in ValeurChallenger:
     challenger = donnees(json.dumps(challenger))
     nomChall.append(challenger.nom)
 
 LabelChoixVainqueur = ttk.Combobox(framePari, values=nomChall, state="readonly")
 print(dict(LabelChoixVainqueur))
+
 LabelChoixVainqueur.current(0)
-LabelChoixVainqueur.grid(row=2, column=2)
+LabelChoixVainqueur.grid(row=2, column=1)
+
+LabelMontantPari = tk.Label(framePari, text="Choisir un montant : ", font=("Arial", 15), bg="#87CEFA", fg="white")
+LabelMontantPari.grid(row=3, column=0)
 
 EntryPari = tk.Entry(framePari, font=("Arial", 15), bg="#87CEFA", fg="white")
-EntryPari.grid(row=1, column=3)
+EntryPari.grid(row=3, column=1)
 
-ButtonPari = tk.Button(framePari, text="Parier", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:pari.parier()).grid(row=3, column=2)
+ButtonPari = tk.Button(framePari, text="Parier", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:pari.parier()).grid(row=4, column=0, columnspan=2)
 
 #======================================================================
 #-----------------------Frame visualisation compte---------------------
