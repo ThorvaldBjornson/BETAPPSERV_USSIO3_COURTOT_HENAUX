@@ -860,7 +860,8 @@ def creationFrameCancel():
 class Rencontre:
     def challenger(self):
         rq = {
-            "action": "afficher all challenger"
+            "action": "afficher all challenger",
+            "discipline": idDiscipline[LabelChoixDiscipline.current()]
         }
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect(('192.168.1.86', 9999))
@@ -897,7 +898,6 @@ class Rencontre:
         return data
 
     def ajoutRencontre(self):
-
         discipline = idDiscipline[LabelChoixDiscipline.current()]
         rencontre = EntryNomRencontre.get()
         challenger1 = idChallengerAdmin[LabelChoixChallenger1.current()]
@@ -971,6 +971,86 @@ def creationFrameAjout():
     global EntryLieuRencontre
     EntryLieuRencontre = tk.Entry(frameAjout, font=("Arial", 15), bg="#87CEFA", fg="white")
     EntryLieuRencontre.grid(row=8, column=4)
+    def chargeChallenger(event):
+        # Challenger
+        global valeurChallengerAdmin
+        valeurChallengerAdmin = ajout.challenger().challengers
+        global nomChallAdmin
+        nomChallAdmin = []
+        global idChallengerAdmin
+        idChallengerAdmin = []
+        for challenger in valeurChallengerAdmin:
+            challenger = donnees(json.dumps(challenger))
+            nomChallAdmin.append(challenger.nom)
+            idChallengerAdmin.append(challenger.id)
+
+        global LabelChoixChallenger1
+        LabelChoixChallenger1 = ttk.Combobox(frameAjout, values=nomChallAdmin, state="readonly")
+        print(dict(LabelChoixChallenger1))
+        LabelChoixChallenger1.current(0)
+        LabelChoixChallenger1.grid(row=9, column=4)
+
+        global LabelCoteChallenger1
+        LabelCoteChallenger1 = tk.Label(frameAjout, text="Cote du challenger :", font=("Arial", 17), bg="#87CEFA",
+                                        fg="white")
+        LabelCoteChallenger1.grid(row=10, column=4)
+
+        global EntryCoteChallenger1
+        EntryCoteChallenger1 = tk.Entry(frameAjout, font=("Arial", 15), bg="#87CEFA", fg="white")
+        EntryCoteChallenger1.grid(row=11, column=4)
+
+        global LabelVs
+        LabelVs = tk.Label(frameAjout, text="VS", font=("Arial", 17), bg="#87CEFA", fg="white")
+        LabelVs.grid(row=9, column=5)
+
+        global valeurChallenger2Admin
+        valeurChallenger2Admin = ajout.challenger().challengers
+        global nomChallAdmin2
+        nomChallAdmin2 = []
+        global idChallengerAdmin2
+        idChallengerAdmin2 = []
+        for challenger in valeurChallenger2Admin:
+            challenger = donnees(json.dumps(challenger))
+            nomChallAdmin2.append(challenger.nom)
+            idChallengerAdmin2.append(challenger.id)
+
+        global LabelChoixChallenger2
+        LabelChoixChallenger2 = ttk.Combobox(frameAjout, values=nomChallAdmin2, state="readonly")
+        print(dict(LabelChoixChallenger2))
+        LabelChoixChallenger2.current(0)
+        LabelChoixChallenger2.grid(row=9, column=6)
+
+        global LabelCoteChallenger2
+        LabelCoteChallenger2 = tk.Label(frameAjout, text="Cote du challenger :", font=("Arial", 17), bg="#87CEFA",
+                                        fg="white")
+        LabelCoteChallenger2.grid(row=10, column=6)
+
+        global EntryCoteChallenger2
+        EntryCoteChallenger2 = tk.Entry(frameAjout, font=("Arial", 15), bg="#87CEFA", fg="white")
+        EntryCoteChallenger2.grid(row=11, column=6)
+
+    # Discipline
+    global LabelDiscipline
+    LabelDiscipline = tk.Label(frameAjout, text="Choix de la Discipline :", font=("Arial", 15), bg="#87CEFA",
+                               fg="white")
+    LabelDiscipline.grid(row=4, column=6)
+    global valueDiscipline
+    valueDiscipline = ajout.discipline().disciplines
+    global Discipline
+    Discipline = []
+    global idDiscipline
+    idDiscipline = []
+    for discipline in valueDiscipline:
+        discipline = donnees(json.dumps(discipline))
+        Discipline.append(discipline.nom)
+        idDiscipline.append(discipline.id)
+
+    global LabelChoixDiscipline
+    LabelChoixDiscipline = ttk.Combobox(frameAjout, values=Discipline, state="readonly")
+    print(dict(LabelChoixDiscipline))
+    LabelChoixDiscipline.current(0)
+    LabelChoixDiscipline.grid(row=5, column=6)
+    LabelChoixDiscipline.bind("<<ComboboxSelected>>", chargeChallenger)
 
     #Challenger
     global valeurChallengerAdmin
@@ -1027,26 +1107,7 @@ def creationFrameAjout():
     EntryCoteChallenger2 = tk.Entry(frameAjout, font=("Arial", 15), bg="#87CEFA", fg="white")
     EntryCoteChallenger2.grid(row=11, column=6)
 
-    #Discipline
-    global LabelDiscipline
-    LabelDiscipline = tk.Label(frameAjout, text="Choix de la Discipline :", font=("Arial", 15), bg="#87CEFA", fg="white")
-    LabelDiscipline.grid(row=4, column=6)
-    global valueDiscipline
-    valueDiscipline = ajout.discipline().disciplines
-    global Discipline
-    Discipline = []
-    global idDiscipline
-    idDiscipline = []
-    for discipline in valueDiscipline:
-        discipline = donnees(json.dumps(discipline))
-        Discipline.append(discipline.nom)
-        idDiscipline.append(discipline.id)
 
-    global LabelChoixDiscipline
-    LabelChoixDiscipline = ttk.Combobox(frameAjout, values=Discipline, state="readonly")
-    print(dict(LabelChoixDiscipline))
-    LabelChoixDiscipline.current(0)
-    LabelChoixDiscipline.grid(row=5, column=6)
 
 
     #bouton ajout
