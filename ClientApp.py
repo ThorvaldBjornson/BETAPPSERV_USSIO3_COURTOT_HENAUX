@@ -724,15 +724,11 @@ def creationFrameAdmin():
     #Initialisation des titre
     global LabelTitleAdmin
     LabelTitleAdmin = tk.Label(frameAdmin, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
-    LabelTitleAdmin.grid(row=0, column=3)
+    LabelTitleAdmin.grid(row=0, column=1, columnspan=2)
 
     global LabelTitleRencontreAdmin
     LabelTitleRencontreAdmin = tk.Label(frameAdmin, text="Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
     LabelTitleRencontreAdmin.grid(row=2, column=1, columnspan=2)
-
-    global LabelAjoutRencontre
-    LabelAjoutRencontre = tk.Label(frameAdmin, text="Ajouter Une Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
-    LabelAjoutRencontre.grid(row=2, column=5)
 
     #Récuperation identité
     global User
@@ -746,16 +742,18 @@ def creationFrameAdmin():
     #feed + affichage des rencontres
     global rencontreAdmin
     rencontreAdmin = admin.rencontre().rencontre
+    i = 0
     for i in range(len(rencontreAdmin)):
         r = donnees(json.dumps(rencontreAdmin[i]))
         valuesRencontreAdmin = r.nom + " le " + r.date + " à " + r.lieu
 
         labelRencontreAdmin = tk.Label(frameAdmin, text=valuesRencontreAdmin, font=("Arial", 15), bg="#87CEFA", fg="white")
-        labelRencontreAdmin.grid(row=i+3, column=0)
-        ButtonCancel = tk.Button(frameAdmin, text="Annulé", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:creationFramePari())
-        ButtonCancel.grid(row=i+3, column=1)
-        ButtonWinner = tk.Button(frameAdmin, text="Choisir un Vainqueur", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda: creationFrameVainqueur())
-        ButtonWinner.grid(row=i + 3, column=2)
+        labelRencontreAdmin.grid(row=i+3, column=1, columnspan=2)
+
+    ButtonCancel = tk.Button(frameAdmin, text="Annulé", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:creationFrameCancel())
+    ButtonCancel.grid(row=i + 4, column=1)
+    ButtonWinner = tk.Button(frameAdmin, text="Choisir un Vainqueur", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda: creationFrameVainqueur())
+    ButtonWinner.grid(row=i + 4, column=2)
 
     raise_frame(frameAdmin)
 
@@ -779,6 +777,7 @@ class cancel:
         print(rq)
         data = donnees(data)
         return data
+
     def annule(self):
         idRencontre = idRencontrePariAdmin[ComboboxRencontrePariAdmin.current()]
 
@@ -1051,8 +1050,25 @@ def creationFrameAjout():
 #======================================================================
 class Vainqueur:
 
+    def rencontre(self):
+        rq = {
+                "action": "afficher rencontre",
+             }
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect(('192.168.1.86', 9999))
+        message = json.dumps(rq)
+        message_obj = donnees(message)
+        print(message_obj.action)
+        s.send(message.encode("ascii"))
+        data = s.recv(1024)
+        s.close()
+        print(repr(data), 'Reçue')
+        print(rq)
+        data = donnees(data)
+        return data
+
     def challenger(self):
-        Rencontre = "5"
+        Rencontre = idRencontreVainqueur[ComboboxRencontreVainqueur.current()]
         rq = {
             "action": "afficher challenger",
             "rencontre": Rencontre
@@ -1071,7 +1087,7 @@ class Vainqueur:
         return data
 
     def envoiVainqueur(self):
-        Rencontre = "1"
+        Rencontre = idRencontreVainqueur[ComboboxRencontreVainqueur.current()]
         rq = {
             "action": "choisir vainqueur",
             "rencontre": Rencontre,
@@ -1090,6 +1106,7 @@ class Vainqueur:
         print(rq)
         return data
 
+
 vainqueur = Vainqueur()
 frameVainqueur= tk.Frame(root, bg="#87CEFA", bd=1)
 def creationFrameVainqueur():
@@ -1101,10 +1118,54 @@ def creationFrameVainqueur():
     global LabelRencontreVainqueur
     LabelRencontreVainqueur = tk.Label(frameVainqueur, text="Choisir un Vainqueur", font=("Arial", 15), bg="#87CEFA", fg="white")
     LabelRencontreVainqueur.grid(row=1, column=0)
+    global RencontreVainqueur
+    RencontreVainqueur = vainqueur.rencontre().rencontre
+    global nomRencontreVainqueur
+    nomRencontreVainqueur = []
+    global idRencontreVainqueur
+    idRencontreVainqueur = []
+    for rencontreVainqueur in RencontreVainqueur:
+        rencontreVainqueur = donnees(json.dumps(rencontreVainqueur))
+        nomRencontreVainqueur.append(rencontreVainqueur.nom)
+        idRencontreVainqueur.append(rencontreVainqueur.id)
+    if (nomRencontreVainqueur == []):
+        nomRencontreVainqueur = [""]
+    global ComboboxRencontreVainqueur
+    ComboboxRencontreVainqueur = ttk.Combobox(frameVainqueur, values=nomRencontreVainqueur, state="readonly")
+    print(dict(ComboboxRencontreVainqueur))
+    ComboboxRencontreVainqueur.current(0)
+    ComboboxRencontreVainqueur.grid(row=2, column=0)
 
-    #Choix Vainqueur
+    def rechargeChallenger(event):
+        global LabelChoixRencontreVainqueur
+        LabelChoixRencontreVainqueur = tk.Label(frameVainqueur, )
+        # Choix Vainqueur
+        global Challengers
+        Challengers = vainqueur.challenger().challengers
+        global nomVainqueur
+        nomVainqueur = []
+        global idVainqueur
+        idVainqueur = []
+        for challenger in Challengers:
+            challenger = donnees(json.dumps(challenger))
+            nomVainqueur.append(challenger.nom)
+            idVainqueur.append(challenger.id)
+
+        if (nomVainqueur == []):
+            nomVainqueur = [""]
+
+        global ComboboxVainqueur
+        ComboboxVainqueur = ttk.Combobox(frameVainqueur, values=nomVainqueur, state="readonly")
+        print(dict(ComboboxVainqueur))
+        ComboboxVainqueur.current()
+        ComboboxVainqueur.grid(row=3, column=0)
+    ComboboxRencontreVainqueur.bind("<<ComboboxSelected>>", rechargeChallenger)
+
+    global LabelChoixRencontreVainqueur
+    LabelChoixRencontreVainqueur = tk.Label(frameVainqueur, )
+    # Choix Vainqueur
     global Challengers
-    Challengers = ajout.challenger().challengers
+    Challengers = vainqueur.challenger().challengers
     global nomVainqueur
     nomVainqueur = []
     global idVainqueur
@@ -1114,16 +1175,20 @@ def creationFrameVainqueur():
         nomVainqueur.append(challenger.nom)
         idVainqueur.append(challenger.id)
 
+    if (nomVainqueur == []):
+        nomVainqueur = [""]
+
     global ComboboxVainqueur
     ComboboxVainqueur = ttk.Combobox(frameVainqueur, values=nomVainqueur, state="readonly")
     print(dict(ComboboxVainqueur))
-    ComboboxVainqueur.current(0)
-    ComboboxVainqueur.grid(row=2, column=0)
+    ComboboxVainqueur.current()
+    ComboboxVainqueur.grid(row=3, column=0)
+
 
     #Bouton
     global btnVainqueur
     btnVainqueur = tk.Button(frameVainqueur, text="Ajouter", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda :vainqueur.envoiVainqueur())
-    btnVainqueur.grid(row=3, column=0)
+    btnVainqueur.grid(row=4, column=0)
 
     raise_frame(frameVainqueur)
 
