@@ -95,7 +95,7 @@ creationMenuDefault()
 #Initialisation du titre
 
 LabelTitleAccueil = tk.Label(frameLogin, text="Bienvenue sur BetAppServeur", font=("Arial", 40), bg="#87CEFA", fg="white")
-LabelTitleAccueil.grid()
+LabelTitleAccueil.grid(sticky='news')
 
 #Initialisation du formulaire de Login
 
@@ -296,8 +296,8 @@ def creationFrameUtilisateur():
     LabelTitleRencontre.grid(row=1, column=0)
 
     global LabelTitleParisEnCours
-    LabelTitleParisEnCours = tk.Label(frameUser, text="Historique des gains", font=("Arial", 20), bg="#87CEFA", fg="white")
-    LabelTitleParisEnCours.grid(row=1, column=2)
+    LabelTitleParisEnCours = tk.Label(frameUser, text="Paris en cours", font=("Arial", 20), bg="#87CEFA", fg="white")
+    LabelTitleParisEnCours.grid(row=1, column=3)
 
     #Récuperation identité
     global User
