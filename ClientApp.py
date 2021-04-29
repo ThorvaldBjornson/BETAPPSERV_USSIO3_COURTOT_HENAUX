@@ -172,26 +172,6 @@ class utilisateur:
         data = donnees(data)
         return data
 
-    def historique(self):
-        User = "6"
-        rq = {
-            "action": "afficher historique",
-            "utilisateur": User
-        }
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect(('192.168.1.86', 9999))
-        message = json.dumps(rq)
-        message_obj = donnees(message)
-        print(message_obj.action)
-        s.send(message.encode("ascii"))
-        data = s.recv(999999)
-        s.close()
-        print(repr(data), 'Reçue')
-        print(rq)
-        data = donnees(data)
-        return data
-
-
     def fond(self):
         User = "6"
         rq = {
@@ -218,13 +198,10 @@ frameUser= tk.Frame(root, bg="#87CEFA", bd=1)
 
 #Initialisation des titre
 LabelTitleUser = tk.Label(frameUser, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
-LabelTitleUser.grid(row=0, column=2)
+LabelTitleUser.grid(row=0, column=1)
 
 LabelTitleRencontre = tk.Label(frameUser, text="Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
-LabelTitleRencontre.grid(row=1, column=0)
-
-LabelTitleHistorique = tk.Label(frameUser, text="Historique des gains", font=("Arial", 20), bg="#87CEFA", fg="white")
-LabelTitleHistorique.grid(row=1, column=2)
+LabelTitleRencontre.grid(row=1, column=1)
 
 #Récuperation identité
 User = "Olivier Flauzac"
@@ -240,18 +217,9 @@ for i in range(len(rencontre)):
     values = r.nom + " le " + r.date + " à " + r.lieu
 
     LabelRencontre = tk.Label(frameUser, text=values, font=("Arial", 15), bg="#87CEFA", fg="white")
-    LabelRencontre.grid(row=i+2, column=0)
+    LabelRencontre.grid(row=i+2, column=1)
 ButtonParier = tk.Button(frameUser, text="Parier", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:raise_frame(framePari))
-ButtonParier.grid(row=i+3, column=0)
-
-#feed + affichage de l'historique
-historique = ut.historique().historique
-for i in range(len(historique)):
-    h = donnees(json.dumps(historique[i]))
-    v = str(h.resultat) + " €"
-
-    LabelHistorique = tk.Label(frameUser, text=v, font=("Arial", 15), bg="#87CEFA", fg="white")
-    LabelHistorique.grid(row=i + 2, column=3)
+ButtonParier.grid(row=i+3, column=1)
 
 #Affichage des fonds
 
@@ -564,13 +532,11 @@ frameAdmin = tk.Frame(root, bg="#87CEFA", bd=1)
 
 #Initialisation des titre
 LabelTitleAdmin = tk.Label(frameAdmin, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
-LabelTitleAdmin.grid(row=0, column=3)
+LabelTitleAdmin.grid(row=0, column=1, columnspan=2)
 
 LabelTitleRencontreAdmin = tk.Label(frameAdmin, text="Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
 LabelTitleRencontreAdmin.grid(row=2, column=1, columnspan=2)
 
-LabelAjoutRencontre = tk.Label(frameAdmin, text="Ajouter Une Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
-LabelAjoutRencontre.grid(row=2, column=5)
 
 #Récuperation identité
 User = "Admin"
@@ -581,16 +547,18 @@ LabelUserAdmin.grid(row=0, column=0)
 ## Rencontre
 #feed + affichage des rencontres
 rencontreAdmin = admin.rencontre().rencontre
+i=0
 for i in range(len(rencontreAdmin)):
     r = donnees(json.dumps(rencontreAdmin[i]))
     valuesRencontreAdmin = r.nom + " le " + r.date + " à " + r.lieu
 
     labelRencontreAdmin = tk.Label(frameAdmin, text=valuesRencontreAdmin, font=("Arial", 15), bg="#87CEFA", fg="white")
-    labelRencontreAdmin.grid(row=i+3, column=0)
-    ButtonCancel = tk.Button(frameAdmin, text="Annulé", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:raise_frame(framePari))
-    ButtonCancel.grid(row=i+3, column=1)
-    ButtonWinner = tk.Button(frameAdmin, text="Choisir un Vainqueur", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda: raise_frame(frameVainqueur))
-    ButtonWinner.grid(row=i + 3, column=2)
+    labelRencontreAdmin.grid(row=i+3, column=1, columnspan=2)
+
+ButtonCancel = tk.Button(frameAdmin, text="Annulé", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:raise_frame(framePari))
+ButtonCancel.grid(row=i+4, column=1)
+ButtonWinner = tk.Button(frameAdmin, text="Choisir un Vainqueur", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda: raise_frame(frameVainqueur))
+ButtonWinner.grid(row=i + 4, column=2)
 
 # =====================================================================
 # -------------------------Annulé Rencontre----------------------------
