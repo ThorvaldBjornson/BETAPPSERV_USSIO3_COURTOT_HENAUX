@@ -1074,7 +1074,7 @@ class Vainqueur:
             "rencontre": Rencontre,
             "challenger": idVainqueur[ComboboxVainqueur.current()]
         }
-        print(idVainqueur[cbbVainqueur.current()])
+        print(idVainqueur[ComboboxVainqueur.current()])
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect(('192.168.1.86', 9999))
         message = json.dumps(rq)
@@ -1090,28 +1090,35 @@ class Vainqueur:
 vainqueur = Vainqueur()
 frameVainqueur= tk.Frame(root, bg="#87CEFA", bd=1)
 def creationFrameVainqueur():
+    global LabelTitleVainqueur
     LabelTitleVainqueur = tk.Label(frameVainqueur, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
     LabelTitleVainqueur.grid(row=0, column=0)
 
     #Choix Rencontre
+    global LabelRencontreVainqueur
     LabelRencontreVainqueur = tk.Label(frameVainqueur, text="Choisir un Vainqueur", font=("Arial", 15), bg="#87CEFA", fg="white")
     LabelRencontreVainqueur.grid(row=1, column=0)
 
     #Choix Vainqueur
+    global Challengers
     Challengers = ajout.challenger().challengers
+    global nomVainqueur
     nomVainqueur = []
+    global idVainqueur
     idVainqueur = []
     for challenger in Challengers:
         challenger = donnees(json.dumps(challenger))
         nomVainqueur.append(challenger.nom)
         idVainqueur.append(challenger.id)
 
+    global ComboboxVainqueur
     ComboboxVainqueur = ttk.Combobox(frameVainqueur, values=nomVainqueur, state="readonly")
     print(dict(ComboboxVainqueur))
     ComboboxVainqueur.current(0)
     ComboboxVainqueur.grid(row=2, column=0)
 
     #Bouton
+    global btnVainqueur
     btnVainqueur = tk.Button(frameVainqueur, text="Ajouter", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda :vainqueur.envoiVainqueur())
     btnVainqueur.grid(row=3, column=0)
 
