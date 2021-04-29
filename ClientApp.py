@@ -485,11 +485,14 @@ def creationFramePari():
 
     global nomChall
     nomChall = []
+    coteChallenger = []
     for challenger in ValeurChallenger:
         challenger = donnees(json.dumps(challenger))
         nomChall.append(challenger.nom)
+        coteChallenger.append((challenger.cote))
     if nomChall == []:
         nomChall = [""]
+        coteChallenger = [""]
     global LabelChoixVainqueur
     LabelChoixVainqueur = ttk.Combobox(framePari, values=nomChall, state="readonly")
     print(dict(LabelChoixVainqueur))
@@ -505,8 +508,23 @@ def creationFramePari():
     EntryPari = tk.Entry(framePari, font=("Arial", 15), bg="#87CEFA", fg="white")
     EntryPari.grid(row=3, column=1)
 
+    def rechargeCote(event):
+        cote = " " + str(coteChallenger[LabelChoixVainqueur.current()]) + " "
+        global LabelCotePariVariable
+        LabelCotePariVariable = tk.Label(framePari, text=cote, font=("Arial", 15), bg="#87CEFA", fg="white")
+        LabelCotePariVariable.grid(row=4, column=1)
+    LabelChoixVainqueur.bind("<<ComboboxSelected>>", rechargeCote)
+
+    global LabelCotePari
+    LabelCotePari = tk.Label(framePari, text="La cote est de : ", font=("Arial", 15), bg="#87CEFA", fg="white")
+    LabelCotePari.grid(row=4, column=0)
+    cote = coteChallenger[LabelChoixVainqueur.current()]
+    global LabelCotePariVariable
+    LabelCotePariVariable = tk.Label(framePari, text=cote, font=("Arial", 15), bg="#87CEFA", fg="white")
+    LabelCotePariVariable.grid(row=4, column=1)
+
     global ButtonPari
-    ButtonPari = tk.Button(framePari, text="Parier", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:pari.parier()).grid(row=4, column=0, columnspan=2)
+    ButtonPari = tk.Button(framePari, text="Parier", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:pari.parier()).grid(row=5, column=0, columnspan=2)
 
     raise_frame(framePari)
 
@@ -641,7 +659,7 @@ def creationFrameCompte():
 
     global LabelUser
     LabelUser = tk.Label(frameCompte, text=User, font=("Arial", 15), bg="#87CEFA", fg="white")
-    LabelUser.grid(row=0, column=0)
+    LabelUser.grid(row=0, column=1)
 
     #feed + affichage de l'historique
     global Historique
@@ -888,14 +906,6 @@ class Rencontre:
         cote_challenger2 =  EntryCoteChallenger2.get()
         date = EntryDateRencontre.get()
         lieu = EntryLieuRencontre.get()
-        print(discipline)
-        print(rencontre)
-        print(challenger1)
-        print(challenger2)
-        print(cote_challenger1)
-        print(cote_challenger2)
-        print(date)
-        print(lieu)
         if discipline == ''  or rencontre == ''  or challenger1 == ''  or challenger2 == ''  or cote_challenger1 == ''  or cote_challenger2 == ''  or date == ''  or lieu == '' :
             tk.messagebox.showwarning(title="Erreur", message="Veuillez remplir tous les champs.")
         else :
