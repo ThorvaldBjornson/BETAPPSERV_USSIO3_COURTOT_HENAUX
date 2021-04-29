@@ -337,7 +337,10 @@ def creationFrameUtilisateur():
 
     #Affichage des fonds
     global Fond
-    Fond = " Fonds : " + str(ut.fond()) + " €"
+    if str(ut.fond()) == "fail" :
+        Fond =  " Fonds : 0 €"
+    else:
+        Fond = " Fonds : " + str(ut.fond()) + " €"
 
     global LabelFond
     LabelFond = tk.Label(frameUser, text=Fond, font=("Arial", 15), bg="#87CEFA", fg="white")
