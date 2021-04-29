@@ -462,16 +462,32 @@ def creationFramePari():
 
         global nomChall
         nomChall = []
+        coteChallenger = []
         for challenger in ValeurChallenger:
             challenger = donnees(json.dumps(challenger))
             nomChall.append(challenger.nom)
+            coteChallenger.append((challenger.cote))
         if nomChall == []:
             nomChall = [""]
+            coteChallenger = [""]
         global LabelChoixVainqueur
         LabelChoixVainqueur = ttk.Combobox(framePari, values=nomChall, state="readonly")
         print(dict(LabelChoixVainqueur))
         LabelChoixVainqueur.current(0)
         LabelChoixVainqueur.grid(row=2, column=1)
+
+        def rechargeCote(event):
+            cote = " " + str(coteChallenger[LabelChoixVainqueur.current()]) + " "
+            global LabelCotePariVariable
+            LabelCotePariVariable = tk.Label(framePari, text=cote, font=("Arial", 15), bg="#87CEFA", fg="white")
+            LabelCotePariVariable.grid(row=4, column=1)
+
+        cote = " " + str(coteChallenger[LabelChoixVainqueur.current()]) + " "
+        global LabelCotePariVariable
+        LabelCotePariVariable = tk.Label(framePari, text=cote, font=("Arial", 15), bg="#87CEFA", fg="white")
+        LabelCotePariVariable.grid(row=4, column=1)
+        
+        LabelChoixVainqueur.bind("<<ComboboxSelected>>", rechargeCote)
     ComboboxRencontrePari.bind("<<ComboboxSelected>>", rechargeChallenger)
 
     global ValeurChallenger
