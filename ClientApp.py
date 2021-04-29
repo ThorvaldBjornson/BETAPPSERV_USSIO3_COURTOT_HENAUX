@@ -95,7 +95,7 @@ creationMenuDefault()
 #Initialisation du titre
 
 LabelTitleAccueil = tk.Label(frameLogin, text="Bienvenue sur BetAppServeur", font=("Arial", 40), bg="#87CEFA", fg="white")
-LabelTitleAccueil.grid(sticky='news')
+LabelTitleAccueil.grid()
 
 #Initialisation du formulaire de Login
 
@@ -122,7 +122,7 @@ ButtonConnexion.grid()
 ButtonGoToRegister = tk.Button(frameLogin, text="S'enregistrer", font=("Arial", 20), bg="#DCDCDC", fg="white", command=lambda: creationFrameRegister() )
 ButtonGoToRegister.grid()
 
-
+frameLogin.grid(sticky='news')
 
 
 #======================================================================
