@@ -868,7 +868,7 @@ class Rencontre:
         message_obj = donnees(message)
         print(message_obj.action)
         s.send(message.encode("ascii"))
-        data = s.recv(1024)
+        data = s.recv(9999)
         s.close()
         print(repr(data), 'Reçue')
         print(rq)
@@ -1197,7 +1197,7 @@ def creationFrameVainqueur():
 
     #Bouton
     global btnVainqueur
-    btnVainqueur = tk.Button(frameVainqueur, text="Ajouter", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda :vainqueur.envoiVainqueur())
+    btnVainqueur = tk.Button(frameVainqueur, text="Vainqueur", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda :vainqueur.envoiVainqueur())
     btnVainqueur.grid(row=4, column=0)
 
     raise_frame(frameVainqueur)
