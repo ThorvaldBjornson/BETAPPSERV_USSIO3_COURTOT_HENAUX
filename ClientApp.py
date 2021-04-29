@@ -149,12 +149,20 @@ def register():
     s.close()
     print(repr(data), 'Reçue')
     print(rq)
-    if('success' in data.decode("ascii")):
-        creationFrameUtilisateur()
+    if('fail' in data.decode("ascii")):
+        tk.messagebox.showwarning(title="Erreur", message="Erreur.")
     elif('login existant' in data.decode("ascii")):
         tk.messagebox.showwarning(title="Erreur", message="Cette identifiant existe déjà.")
     else:
-        tk.messagebox.showwarning(title="Erreur", message="Erreur.")
+        tk.messagebox.showinfo(title="Succès !", message="Votre Compte à bien été créé")
+        data = donnees(data)
+        ut.setDataUser(data.idUtilisateur, data.login, data.role)
+        if (ut.role == "parieur"):
+            creationFrameUtilisateur()
+            creationMenuUser()
+        elif (ut.role == "admin"):
+            creationFrameAdmin()
+            creationMenuAdmin()
 
 frameRegister = tk.Frame(root, bg="#87CEFA", bd=1)
 
@@ -228,10 +236,10 @@ class utilisateur:
         data = donnees(data)
         return data
 
-    def historique(self):
+    def ParisEnCours(self):
         User = ut.idUtilisateur
         rq = {
-            "action": "afficher historique",
+            "action": "afficher paris en cours",
             "utilisateur": User
         }
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -244,7 +252,10 @@ class utilisateur:
         s.close()
         print(repr(data), 'Reçue')
         print(rq)
-        data = donnees(data)
+        if 'fail' in repr(data):
+            print("fail")
+        else:
+            data = donnees(data)
         return data
 
 
@@ -265,6 +276,7 @@ class utilisateur:
         print(repr(data), 'Reçue')
         print(rq)
         data = data.decode("ascii")
+
         return data
 
 ut = utilisateur()
@@ -283,9 +295,9 @@ def creationFrameUtilisateur():
     LabelTitleRencontre = tk.Label(frameUser, text="Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
     LabelTitleRencontre.grid(row=1, column=0)
 
-    global LabelTitleHistorique
-    LabelTitleHistorique = tk.Label(frameUser, text="Historique des gains", font=("Arial", 20), bg="#87CEFA", fg="white")
-    LabelTitleHistorique.grid(row=1, column=2)
+    global LabelTitleParisEnCours
+    LabelTitleParisEnCours = tk.Label(frameUser, text="Historique des gains", font=("Arial", 20), bg="#87CEFA", fg="white")
+    LabelTitleParisEnCours.grid(row=1, column=2)
 
     #Récuperation identité
     global User
@@ -310,14 +322,18 @@ def creationFrameUtilisateur():
     ButtonParier.grid(row=i+3, column=0)
 
     #feed + affichage de l'historique
-    global historique
-    historique = ut.historique().historique
-    for i in range(len(historique)):
-        h = donnees(json.dumps(historique[i]))
-        v = str(h.resultat) + " €"
+    global ParisEnCours
+    if 'fail' in repr(ut.ParisEnCours()):
+        print("fail")
+    else:
+        ParisEnCours = ut.ParisEnCours().paris
 
-        LabelHistorique = tk.Label(frameUser, text=v, font=("Arial", 15), bg="#87CEFA", fg="white")
-        LabelHistorique.grid(row=i + 2, column=3)
+        for i in range(len(ParisEnCours)):
+            h = donnees(json.dumps(ParisEnCours[i]))
+            v = str(h.mise) + "€ miser sur  " + str(h.Challenger) + " pour un gains potentiel de " + str(h.gainPotentiel)
+
+            LabelParisEnCours = tk.Label(frameUser, text=v, font=("Arial", 15), bg="#87CEFA", fg="white")
+            LabelParisEnCours.grid(row=i + 2, column=3)
 
     #Affichage des fonds
     global Fond
@@ -352,7 +368,7 @@ class Pari:
 
     def parier(self):
         Montant = EntryPari.get()
-        Rencontre = "11"
+        Rencontre = idRencontrePari[ComboboxRencontrePari.current()]
         Challenger = LabelChoixVainqueur.get()
         User = ut.idUtilisateur
         print(Montant)
