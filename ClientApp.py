@@ -12,6 +12,8 @@ class donnees:
 def raise_frame(frame):
     frame.tkraise()
 
+
+
 root = tk.Tk()
 
 root.title("BetApp")
@@ -20,30 +22,40 @@ root.minsize(480,360)
 #Logo
 root.iconbitmap("logo.ico")
 root.config(background="#87CEFA")
+
 #Ajout du Menu Bar
-Menu_bar = tk.Menu(root)
+def creationMenuDefault():
+    Menu_bar = tk.Menu(root)
+    action_menu = tk.Menu(Menu_bar, tearoff=0)
+    action_menu.add_command(label="Quitter", command=root.quit)
+    Menu_bar.add_cascade(label="Action", menu=action_menu)
+    root.config(menu=Menu_bar)
+def creationMenuUser():
+    Menu_bar = tk.Menu(root)
+    action_menu = tk.Menu(Menu_bar, tearoff=0)
+    action_menu.add_command(label="Acceuil", command=lambda: creationFrameUtilisateur())
+    action_menu.add_command(label="Mon Compte", command=lambda: creationFrameCompte())
+    action_menu.add_command(label="deconnecter", command=lambda: deconnexion())
+    action_menu.add_command(label="Quitter", command=root.quit)
+    Menu_bar.add_cascade(label="Action", menu=action_menu)
+    root.config(menu=Menu_bar)
 
-action_menu = tk.Menu(Menu_bar, tearoff=0)
+def creationMenuAdmin():
+    Menu_bar = tk.Menu(root)
+    admin_menu = tk.Menu(Menu_bar, tearoff=0)
+    admin_menu.add_command(label="Accueil", command=lambda: creationFrameAdmin())
+    admin_menu.add_command(label="Ajouter Une Rencontre", command=lambda: creationFrameAjout())
+    admin_menu.add_command(label="Annuler Une Rencontre", command=lambda: creationFrameCancel())
+    admin_menu.add_command(label="deconnecter", command=lambda: deconnexion())
+    admin_menu.add_command(label="Quitter", command=root.quit)
 
-action_menu.add_command(label="Acceuil", command=lambda: raise_frame(frameUser))
-action_menu.add_command(label="Mon Compte", command=lambda: raise_frame(frameCompte))
-action_menu.add_command(label="Quitter", command=root.quit)
+    Menu_bar.add_cascade(label="Administrateur", menu=admin_menu)
 
-Menu_bar.add_cascade(label="Action", menu=action_menu)
-
-
-admin_menu = tk.Menu(Menu_bar, tearoff=0)
-admin_menu.add_command(label="Accueil", command=lambda:raise_frame(frameAdmin))
-admin_menu.add_command(label="Ajouter Une Rencontre", command=lambda:raise_frame(frameAjout))
-admin_menu.add_command(label="Annuler Une Rencontre", command=lambda:raise_frame(frameCancel))
-
-Menu_bar.add_cascade(label="Administrateur", menu=admin_menu)
-
-root.config(menu=Menu_bar)
-
+    root.config(menu=Menu_bar)
 #======================================================================
 #-------------------------Frame Login----------------------------------
 #======================================================================
+login = False
 def connect():
     User = EntryLogin.get()
     password = EntryPassword.get()
@@ -63,36 +75,55 @@ def connect():
     data = s.recv(1024)
     s.close()
     print(repr(data), 'Reçue')
-    if('success' in data.decode("ascii")):
-        raise_frame(frameUser)
-    else:
+    if('fail' in data.decode("ascii")):
         tk.messagebox.showwarning(title="Erreur", message="Vous n'avez pas entrez le bon couple identifiant mot de passe.")
+    else:
+        data = donnees(data)
+        ut.setDataUser(data.idUtilisateur, data.login, data.role)
+        if(ut.role == "parieur"):
+            creationFrameUtilisateur()
+            creationMenuUser()
+        elif(ut.role == "admin"):
+            creationFrameAdmin()
+            creationMenuAdmin()
 
-#Mise en place de la Frame
+
 frameLogin = tk.Frame(root, bg="#87CEFA", bd=1)
+#Mise en place de la Frame
 
+creationMenuDefault()
 #Initialisation du titre
+
 LabelTitleAccueil = tk.Label(frameLogin, text="Bienvenue sur BetAppServeur", font=("Arial", 40), bg="#87CEFA", fg="white")
 LabelTitleAccueil.grid()
 
 #Initialisation du formulaire de Login
+
 LabelLogin = tk.Label(frameLogin, text="Login", font=("Arial", 20), bg="#87CEFA", fg="white")
 LabelLogin.grid()
+
 
 EntryLogin = tk.Entry(frameLogin, font=("Arial", 20), bg="#87CEFA", fg="white")
 EntryLogin.grid()
 
+
 LabelMdp = tk.Label(frameLogin, text="Mot de Passe", font=("Arial", 20), bg="#87CEFA", fg="white")
 LabelMdp.grid()
+
 
 EntryPassword = tk.Entry(frameLogin, font=("Arial", 20), bg="#87CEFA", fg="white", show='*')
 EntryPassword.grid()
 
+
 ButtonConnexion = tk.Button(frameLogin, text="Login", font=("Arial", 20), bg="#DCDCDC", fg="white", command=connect)
 ButtonConnexion.grid()
 
-ButtonGoToRegister = tk.Button(frameLogin, text="S'enregistrer", font=("Arial", 20), bg="#DCDCDC", fg="white", command=lambda: raise_frame(frameRegister) )
+
+ButtonGoToRegister = tk.Button(frameLogin, text="S'enregistrer", font=("Arial", 20), bg="#DCDCDC", fg="white", command=lambda: creationFrameRegister() )
 ButtonGoToRegister.grid()
+
+
+
 
 #======================================================================
 #------------------------Frame Register--------------------------------
@@ -119,7 +150,7 @@ def register():
     print(repr(data), 'Reçue')
     print(rq)
     if('success' in data.decode("ascii")):
-        raise_frame(frameUser)
+        creationFrameUtilisateur()
     elif('login existant' in data.decode("ascii")):
         tk.messagebox.showwarning(title="Erreur", message="Cette identifiant existe déjà.")
     else:
@@ -127,34 +158,59 @@ def register():
 
 frameRegister = tk.Frame(root, bg="#87CEFA", bd=1)
 
-LabelTitleRegister = tk.Label(frameRegister, text="Bienvenue sur BetAppServeur", font=("Arial", 40), bg="#87CEFA", fg="white")
-LabelTitleRegister.grid(row=0, column=0)
-#Initialisation du formulaire de Register
-LabelRegister = tk.Label(frameRegister, text="Identifiant", font=("Arial", 20), bg="#87CEFA", fg="white")
-LabelRegister.grid(row=1, column=0)
+def creationFrameRegister():
+    global LabelTitleRegister
+    LabelTitleRegister = tk.Label(frameRegister, text="Bienvenue sur BetAppServeur", font=("Arial", 40), bg="#87CEFA", fg="white")
+    LabelTitleRegister.grid(row=0, column=0)
+    #Initialisation du formulaire de Register
+    global LabelRegister
+    LabelRegister = tk.Label(frameRegister, text="Identifiant", font=("Arial", 20), bg="#87CEFA", fg="white")
+    LabelRegister.grid(row=1, column=0)
 
-EntryRegister = tk.Entry(frameRegister, font=("Arial", 20), bg="#87CEFA", fg="white")
-EntryRegister.grid(row=2, column=0)
+    global EntryRegister
+    EntryRegister = tk.Entry(frameRegister, font=("Arial", 20), bg="#87CEFA", fg="white")
+    EntryRegister.grid(row=2, column=0)
 
-LabelRegisterPassword = tk.Label(frameRegister, text="Mot de Passe", font=("Arial", 20), bg="#87CEFA", fg="white")
-LabelRegisterPassword.grid(row=3, column=0)
+    global LabelRegisterPassword
+    LabelRegisterPassword = tk.Label(frameRegister, text="Mot de Passe", font=("Arial", 20), bg="#87CEFA", fg="white")
+    LabelRegisterPassword.grid(row=3, column=0)
 
-EntryRegisterPassword = tk.Entry(frameRegister, font=("Arial", 20), bg="#87CEFA", fg="white", show='*')
-EntryRegisterPassword.grid(row=4, column=0)
+    global EntryRegisterPassword
+    EntryRegisterPassword = tk.Entry(frameRegister, font=("Arial", 20), bg="#87CEFA", fg="white", show='*')
+    EntryRegisterPassword.grid(row=4, column=0)
 
-LabelConfirmPassword = tk.Label(frameRegister, text="Confirmer le Mot de Passe", font=("Arial", 20), bg="#87CEFA", fg="white")
-LabelConfirmPassword.grid(row=5, column=0)
+    global LabelConfirmPassword
+    LabelConfirmPassword = tk.Label(frameRegister, text="Confirmer le Mot de Passe", font=("Arial", 20), bg="#87CEFA", fg="white")
+    LabelConfirmPassword.grid(row=5, column=0)
 
-EntryConfirmPassword = tk.Entry(frameRegister, font=("Arial", 20), bg="#87CEFA", fg="white", show='*')
-EntryConfirmPassword.grid(row=6, column=0)
+    global EntryConfirmPassword
+    EntryConfirmPassword = tk.Entry(frameRegister, font=("Arial", 20), bg="#87CEFA", fg="white", show='*')
+    EntryConfirmPassword.grid(row=6, column=0)
 
-ButtonRegister = tk.Button(frameRegister, text="S'enregistrer", font=("Arial", 20), bg="#DCDCDC", fg="white", command=register)
-ButtonRegister.grid(row=7, column=0)
+    global ButtonRegister
+    ButtonRegister = tk.Button(frameRegister, text="S'enregistrer", font=("Arial", 20), bg="#DCDCDC", fg="white", command=register)
+    ButtonRegister.grid(row=7, column=0)
+
+    raise_frame(frameRegister)
+
 
 #======================================================================
 #-------------------------Frame Utilisateur----------------------------
 #======================================================================
 class utilisateur:
+    def __init__(self):
+        self.idUtilisateur = 0
+        self.login = "default"
+        self.role = "parieur"
+
+    def setDataUser(self, id, login, role):
+        self.idUtilisateur = id
+        self.login = login
+        self.role = role
+    def destructDataUser(self):
+        self.idUtilisateur = 0
+        self.login = "default"
+        self.role = "parieur"
     def rencontre(self):
         rq = {
                 "action": "afficher rencontre",
@@ -172,8 +228,28 @@ class utilisateur:
         data = donnees(data)
         return data
 
+    def historique(self):
+        User = ut.idUtilisateur
+        rq = {
+            "action": "afficher historique",
+            "utilisateur": User
+        }
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect(('192.168.1.86', 9999))
+        message = json.dumps(rq)
+        message_obj = donnees(message)
+        print(message_obj.action)
+        s.send(message.encode("ascii"))
+        data = s.recv(999999)
+        s.close()
+        print(repr(data), 'Reçue')
+        print(rq)
+        data = donnees(data)
+        return data
+
+
     def fond(self):
-        User = "6"
+        User = ut.idUtilisateur
         rq = {
             "action": "afficher fonds",
             "utilisateur": User
@@ -193,40 +269,65 @@ class utilisateur:
 
 ut = utilisateur()
 
+
 #Mise en place de la Frame
 frameUser= tk.Frame(root, bg="#87CEFA", bd=1)
 
-#Initialisation des titre
-LabelTitleUser = tk.Label(frameUser, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
-LabelTitleUser.grid(row=0, column=1)
+def creationFrameUtilisateur():
+    #Initialisation des titre
+    global LabelTitleUser
+    LabelTitleUser = tk.Label(frameUser, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
+    LabelTitleUser.grid(row=0, column=2)
 
-LabelTitleRencontre = tk.Label(frameUser, text="Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
-LabelTitleRencontre.grid(row=1, column=1)
+    global LabelTitleRencontre
+    LabelTitleRencontre = tk.Label(frameUser, text="Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
+    LabelTitleRencontre.grid(row=1, column=0)
 
-#Récuperation identité
-User = "Olivier Flauzac"
+    global LabelTitleHistorique
+    LabelTitleHistorique = tk.Label(frameUser, text="Historique des gains", font=("Arial", 20), bg="#87CEFA", fg="white")
+    LabelTitleHistorique.grid(row=1, column=2)
 
-LabelUser = tk.Label(frameUser, text=User, font=("Arial", 15), bg="#87CEFA", fg="white")
-LabelUser.grid(row=0, column=0)
+    #Récuperation identité
+    global User
+    User = ut.login
 
-#feed + affichage des rencontres
-rencontre = ut.rencontre().rencontre
-i= 0
-for i in range(len(rencontre)):
-    r = donnees(json.dumps(rencontre[i]))
-    values = r.nom + " le " + r.date + " à " + r.lieu
+    global LabelUser
+    LabelUser = tk.Label(frameUser, text=User, font=("Arial", 15), bg="#87CEFA", fg="white")
+    LabelUser.grid(row=0, column=0)
 
-    LabelRencontre = tk.Label(frameUser, text=values, font=("Arial", 15), bg="#87CEFA", fg="white")
-    LabelRencontre.grid(row=i+2, column=1)
-ButtonParier = tk.Button(frameUser, text="Parier", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:raise_frame(framePari))
-ButtonParier.grid(row=i+3, column=1)
+    #feed + affichage des rencontres
+    global rencontre
+    rencontre = ut.rencontre().rencontre
+    i= 0
+    for i in range(len(rencontre)):
+        r = donnees(json.dumps(rencontre[i]))
+        values = r.nom + " le " + r.date + " à " + r.lieu
+        LabelRencontre = tk.Label(frameUser, text=values, font=("Arial", 15), bg="#87CEFA", fg="white")
+        LabelRencontre.grid(row=i+2, column=0)
 
-#Affichage des fonds
+    global ButtonParier
+    ButtonParier = tk.Button(frameUser, text="Parier", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:creationFramePari())
+    ButtonParier.grid(row=i+3, column=0)
 
-Fond = " Fonds : " + str(ut.fond()) + " €"
+    #feed + affichage de l'historique
+    global historique
+    historique = ut.historique().historique
+    for i in range(len(historique)):
+        h = donnees(json.dumps(historique[i]))
+        v = str(h.resultat) + " €"
 
-LabelFond = tk.Label(frameUser, text=Fond, font=("Arial", 15), bg="#87CEFA", fg="white")
-LabelFond.grid(row=0, column=3)
+        LabelHistorique = tk.Label(frameUser, text=v, font=("Arial", 15), bg="#87CEFA", fg="white")
+        LabelHistorique.grid(row=i + 2, column=3)
+
+    #Affichage des fonds
+    global Fond
+    Fond = " Fonds : " + str(ut.fond()) + " €"
+
+    global LabelFond
+    LabelFond = tk.Label(frameUser, text=Fond, font=("Arial", 15), bg="#87CEFA", fg="white")
+    LabelFond.grid(row=0, column=3)
+
+    raise_frame(frameUser)
 
 #======================================================================
 #-------------------------Frame Pari-----------------------------------
@@ -253,7 +354,7 @@ class Pari:
         Montant = EntryPari.get()
         Rencontre = "11"
         Challenger = LabelChoixVainqueur.get()
-        User = "6"
+        User = ut.idUtilisateur
         print(Montant)
         rq = {
             "action": "parier",
@@ -274,9 +375,12 @@ class Pari:
         data = data.decode("ascii")
         if data == "fail":
             tk.messagebox.showwarning(title="Erreur", message="Vous n'avez pas les fonds nécessaire")
+        if data == "success":
+            tk.messagebox.showinfo(title="Pari enregistré", message="Votre pari à bien été enregistré")
+            creationFrameUtilisateur()
 
     def challenger(self):
-        Rencontre = "11"
+        Rencontre = idRencontrePari[ComboboxRencontrePari.current()]
         rq = {
             "action": "afficher challenger",
             "rencontre": Rencontre,
@@ -299,53 +403,93 @@ pari = Pari()
 #Mise en place de la Frame
 framePari = tk.Frame(root, bg="#87CEFA", bd=1)
 
-#Initialisation des titre
-LabelTitrePari = tk.Label(framePari, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
-LabelTitrePari.grid(row=0, column=0, columnspan=2)
+def creationFramePari():
+    #Initialisation des titre
+    global LabelTitrePari
+    LabelTitrePari = tk.Label(framePari, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
+    LabelTitrePari.grid(row=0, column=0, columnspan=2)
 
-LabelTitreRencontre = tk.Label(framePari, text="Choisir une rencontre : ", font=("Arial", 15), bg="#87CEFA", fg="white")
-LabelTitreRencontre.grid(row=1, column=0)
+    global LabelTitreRencontre
+    LabelTitreRencontre = tk.Label(framePari, text="Choisir une rencontre : ", font=("Arial", 15), bg="#87CEFA", fg="white")
+    LabelTitreRencontre.grid(row=1, column=0)
 
-RencontrePari = pari.rencontre().rencontre
-nomRencontrePari = []
-idRencontrePari = []
-for rencontre in RencontrePari:
-    rencontre = donnees(json.dumps(rencontre))
-    nomRencontrePari.append(rencontre.nom)
-    idRencontrePari.append(rencontre.id)
+    global RencontrePari
+    RencontrePari = pari.rencontre().rencontre
+    global nomRencontrePari
+    nomRencontrePari = []
+    global idRencontrePari
+    idRencontrePari = []
+    for rencontre in RencontrePari:
+        rencontre = donnees(json.dumps(rencontre))
+        nomRencontrePari.append(rencontre.nom)
+        idRencontrePari.append(rencontre.id)
 
-if idRencontrePari == []:
-    nomRencontrePari = [""]
-    idRencontrePari = [""]
-ComboboxRencontrePari = ttk.Combobox(framePari, values=nomRencontrePari, state="readonly")
-print(dict(ComboboxRencontrePari))
-ComboboxRencontrePari.current(0)
-ComboboxRencontrePari.grid(row=1, column=1)
+    if idRencontrePari == []:
+        nomRencontrePari = [""]
+        idRencontrePari = [""]
+    global ComboboxRencontrePari
+    ComboboxRencontrePari = ttk.Combobox(framePari, values=nomRencontrePari, state="readonly")
+    print(dict(ComboboxRencontrePari))
+    ComboboxRencontrePari.current(0)
+    ComboboxRencontrePari.grid(row=1, column=1)
+    def rechargeChallenger(event):
+        global ValeurChallenger
+        ValeurChallenger = pari.challenger().challengers
+        print(ValeurChallenger)
 
-ValeurChallenger = pari.challenger().challengers
-print(ValeurChallenger)
+        global LabelChallengerPari
+        LabelChallengerPari = tk.Label(framePari, text="Choisir une challenger : ", font=("Arial", 15), bg="#87CEFA", fg="white")
+        LabelChallengerPari.grid(row=2, column=0)
 
-LabelChallengerPari = tk.Label(framePari, text="Choisir une challenger : ", font=("Arial", 15), bg="#87CEFA", fg="white")
-LabelChallengerPari.grid(row=2, column=0)
+        global nomChall
+        nomChall = []
+        for challenger in ValeurChallenger:
+            challenger = donnees(json.dumps(challenger))
+            nomChall.append(challenger.nom)
+        if nomChall == []:
+            nomChall = [""]
+        global LabelChoixVainqueur
+        LabelChoixVainqueur = ttk.Combobox(framePari, values=nomChall, state="readonly")
+        print(dict(LabelChoixVainqueur))
+        LabelChoixVainqueur.current(0)
+        LabelChoixVainqueur.grid(row=2, column=1)
+    ComboboxRencontrePari.bind("<<ComboboxSelected>>", rechargeChallenger)
 
-nomChall = [""]
-for challenger in ValeurChallenger:
-    challenger = donnees(json.dumps(challenger))
-    nomChall.append(challenger.nom)
+    global ValeurChallenger
+    ValeurChallenger = pari.challenger().challengers
+    print(ValeurChallenger)
 
-LabelChoixVainqueur = ttk.Combobox(framePari, values=nomChall, state="readonly")
-print(dict(LabelChoixVainqueur))
+    global LabelChallengerPari
+    LabelChallengerPari = tk.Label(framePari, text="Choisir une challenger : ", font=("Arial", 15), bg="#87CEFA",
+                                   fg="white")
+    LabelChallengerPari.grid(row=2, column=0)
 
-LabelChoixVainqueur.current(0)
-LabelChoixVainqueur.grid(row=2, column=1)
+    global nomChall
+    nomChall = []
+    for challenger in ValeurChallenger:
+        challenger = donnees(json.dumps(challenger))
+        nomChall.append(challenger.nom)
+    if nomChall == []:
+        nomChall = [""]
+    global LabelChoixVainqueur
+    LabelChoixVainqueur = ttk.Combobox(framePari, values=nomChall, state="readonly")
+    print(dict(LabelChoixVainqueur))
+    LabelChoixVainqueur.current(0)
+    LabelChoixVainqueur.grid(row=2, column=1)
 
-LabelMontantPari = tk.Label(framePari, text="Choisir un montant : ", font=("Arial", 15), bg="#87CEFA", fg="white")
-LabelMontantPari.grid(row=3, column=0)
 
-EntryPari = tk.Entry(framePari, font=("Arial", 15), bg="#87CEFA", fg="white")
-EntryPari.grid(row=3, column=1)
+    global LabelMontantPari
+    LabelMontantPari = tk.Label(framePari, text="Choisir un montant : ", font=("Arial", 15), bg="#87CEFA", fg="white")
+    LabelMontantPari.grid(row=3, column=0)
 
-ButtonPari = tk.Button(framePari, text="Parier", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:pari.parier()).grid(row=4, column=0, columnspan=2)
+    global EntryPari
+    EntryPari = tk.Entry(framePari, font=("Arial", 15), bg="#87CEFA", fg="white")
+    EntryPari.grid(row=3, column=1)
+
+    global ButtonPari
+    ButtonPari = tk.Button(framePari, text="Parier", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:pari.parier()).grid(row=4, column=0, columnspan=2)
+
+    raise_frame(framePari)
 
 #======================================================================
 #-----------------------Frame visualisation compte---------------------
@@ -354,7 +498,7 @@ class compte:
     def depot(self):
         print("Appel de depot")
         Montant = ComboboxDepot.get()
-        User = "6"
+        User = ut.idUtilisateur
         print(Montant)
         rq = {
             "action": "deposer",
@@ -367,12 +511,20 @@ class compte:
         message_obj = donnees(message)
         print(message_obj.action)
         s.send(message.encode("ascii"))
+        data = s.recv(1024)
+        data = data.decode("ascii")
+        print(data)
+        if 'fail' in data:
+            tk.messagebox.showwarning(title="Erreur d'ajout de fonds", message="Une erreur s'est produite lors de l'ajout des fonds")
+        elif 'success' in data:
+            tk.messagebox.showinfo(title="Ajout de fonds", message="Votre compte à bien été crédité d'un montant de "+str(Montant)+"€")
+            creationFrameCompte()
         print(rq)
         self.fond()
 
     def historique(self):
         print("Appel de historique")
-        User = "6"
+        User = ut.idUtilisateur
         rq = {
             "action": "afficher historique",
             "utilisateur": User
@@ -392,7 +544,7 @@ class compte:
 
     def fond(self):
         print("Appel de fond")
-        User = "6"
+        User = ut.idUtilisateur
         rq = {
             "action": "afficher fonds",
             "utilisateur": User
@@ -412,7 +564,7 @@ class compte:
 
     def statistiques(self):
         print("Appel de statistiques")
-        User = "6"
+        User = ut.idUtilisateur
         rq = {
             "action": "afficher stats",
             "utilisateur": User
@@ -442,66 +594,85 @@ compteUser = compte()
 #Mise en place de la Frame
 frameCompte = tk.Frame(root, bg="#87CEFA", bd=1)
 
-#Initialisation des titre
-LabelTitreCompte = tk.Label(frameCompte, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
-LabelTitreCompte.grid(row=0, column=2)
+def creationFrameCompte():
+    #Initialisation des titre
+    global LabelTitreCompte
+    LabelTitreCompte = tk.Label(frameCompte, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
+    LabelTitreCompte.grid(row=0, column=2)
 
-LabelStatistique = tk.Label(frameCompte, text="Statistique", font=("Arial", 20), bg="#87CEFA", fg="white")
-LabelStatistique.grid(row=1, column=2)
+    global LabelStatistique
+    LabelStatistique = tk.Label(frameCompte, text="Statistique", font=("Arial", 20), bg="#87CEFA", fg="white")
+    LabelStatistique.grid(row=1, column=2)
 
-LabelHistorique = tk.Label(frameCompte, text="Historique des gains", font=("Arial", 20), bg="#87CEFA", fg="white")
-LabelHistorique.grid(row=1, column=1)
+    global LabelHistorique
+    LabelHistorique = tk.Label(frameCompte, text="Historique des gains", font=("Arial", 20), bg="#87CEFA", fg="white")
+    LabelHistorique.grid(row=1, column=1)
 
-#Affichage des fonds
-Fond = " Fonds : " + str(compteUser.fond()) + " €"
+    #Affichage des fonds
+    global Fond
+    Fond = " Fonds : " + str(compteUser.fond()) + " €"
 
-LabelFond = tk.Label(frameCompte, text=Fond, font=("Arial", 15), bg="#87CEFA", fg="white")
-LabelFond.grid(row=1, column=3)
+    global LabelFond
+    LabelFond = tk.Label(frameCompte, text=Fond, font=("Arial", 15), bg="#87CEFA", fg="white")
+    LabelFond.grid(row=1, column=3)
 
-#Récuperation identité
-User = "Olivier Flauzac"
+    #Récuperation identité
+    global User
+    User = ut.login
 
-LabelUser = tk.Label(frameCompte, text=User, font=("Arial", 15), bg="#87CEFA", fg="white")
-LabelUser.grid(row=0, column=0)
+    global LabelUser
+    LabelUser = tk.Label(frameCompte, text=User, font=("Arial", 15), bg="#87CEFA", fg="white")
+    LabelUser.grid(row=0, column=0)
 
-#feed + affichage de l'historique
-Historique = compteUser.historique().historique
-for i in range(len(Historique)):
-    h = donnees(json.dumps(Historique[i]))
-    valueHistorique = h.rencontre + " " + str(h.resultat) + " €"
+    #feed + affichage de l'historique
+    global Historique
+    Historique = compteUser.historique().historique
+    for i in range(len(Historique)):
+        h = donnees(json.dumps(Historique[i]))
+        valueHistorique = h.rencontre + " " + str(h.resultat) + " €"
 
-    LabelRencontreUser = tk.Label(frameCompte, text=valueHistorique, font=("Arial", 15), bg="#87CEFA", fg="white")
-    LabelRencontreUser.grid(row=i + 2, column=1)
+        LabelRencontreUser = tk.Label(frameCompte, text=valueHistorique, font=("Arial", 15), bg="#87CEFA", fg="white")
+        LabelRencontreUser.grid(row=i + 2, column=1)
 
 
-#Affichage des statistiques
-StatPourcentVictoire = str(compteUser.statistiques().Ratio) + "%"
-LabelStatPourcentVictoire = tk.Label(frameCompte, text="Victoire : " + StatPourcentVictoire, font=("Arial", 15), bg="#87CEFA", fg="white")
-LabelStatPourcentVictoire.grid(row=2, column=2)
+    #Affichage des statistiques
+    global StatPourcentVictoire
+    StatPourcentVictoire = str(compteUser.statistiques().Ratio) + "%"
+    global LabelStatPourcentVictoire
+    LabelStatPourcentVictoire = tk.Label(frameCompte, text="Victoire : " + StatPourcentVictoire, font=("Arial", 15), bg="#87CEFA", fg="white")
+    LabelStatPourcentVictoire.grid(row=2, column=2)
 
-StatTotalGains = str(compteUser.statistiques().totalGain) + " €"
-LabelStatTotalGains = tk.Label(frameCompte, text="Total des Gains : " + StatTotalGains, font=("Arial", 15), bg="#87CEFA", fg="white")
-LabelStatTotalGains.grid(row=3, column=2)
+    global StatTotalGains
+    StatTotalGains = str(compteUser.statistiques().totalGain) + " €"
+    global LabelStatTotalGains
+    LabelStatTotalGains = tk.Label(frameCompte, text="Total des Gains : " + StatTotalGains, font=("Arial", 15), bg="#87CEFA", fg="white")
+    LabelStatTotalGains.grid(row=3, column=2)
 
-StatNombreParis = str(compteUser.statistiques().totalParis)
-LabelStatNombreParis = tk.Label(frameCompte, text="Nombre de paris : " + StatNombreParis, font=("Arial", 15), bg="#87CEFA", fg="white")
-LabelStatNombreParis.grid(row=4, column=2)
+    global StatNombreParis
+    StatNombreParis = str(compteUser.statistiques().totalParis)
+    global LabelStatNombreParis
+    LabelStatNombreParis = tk.Label(frameCompte, text="Nombre de paris : " + StatNombreParis, font=("Arial", 15), bg="#87CEFA", fg="white")
+    LabelStatNombreParis.grid(row=4, column=2)
 
-ComboboxDepot = ttk.Combobox(frameCompte,
-                            values=[
-                                    "10",
-                                    "20",
-                                    "50",
-                                    "100",
-                                    "200",
-                                    "500",
-                                    ], state="readonly")
-print(dict(ComboboxDepot))
-ComboboxDepot.current(1)
-ComboboxDepot.grid(row=5, column=2)
+    global ComboboxDepot
+    ComboboxDepot = ttk.Combobox(frameCompte,
+                                values=[
+                                        "10",
+                                        "20",
+                                        "50",
+                                        "100",
+                                        "200",
+                                        "500",
+                                        ], state="readonly")
+    print(dict(ComboboxDepot))
+    ComboboxDepot.current(1)
+    ComboboxDepot.grid(row=5, column=2)
 
-ButtonDepot = tk.Button(frameCompte, text="Déposer", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:compteUser.depot())
-ButtonDepot.grid(row=6, column=2)
+    global ButtonDepot
+    ButtonDepot = tk.Button(frameCompte, text="Déposer", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:compteUser.depot())
+    ButtonDepot.grid(row=6, column=2)
+
+    raise_frame(frameCompte)
 
 
 #======================================================================
@@ -530,35 +701,44 @@ admin = admin()
 #Mise en place de la Frame
 frameAdmin = tk.Frame(root, bg="#87CEFA", bd=1)
 
-#Initialisation des titre
-LabelTitleAdmin = tk.Label(frameAdmin, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
-LabelTitleAdmin.grid(row=0, column=1, columnspan=2)
+def creationFrameAdmin():
+    #Initialisation des titre
+    global LabelTitleAdmin
+    LabelTitleAdmin = tk.Label(frameAdmin, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
+    LabelTitleAdmin.grid(row=0, column=3)
 
-LabelTitleRencontreAdmin = tk.Label(frameAdmin, text="Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
-LabelTitleRencontreAdmin.grid(row=2, column=1, columnspan=2)
+    global LabelTitleRencontreAdmin
+    LabelTitleRencontreAdmin = tk.Label(frameAdmin, text="Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
+    LabelTitleRencontreAdmin.grid(row=2, column=1, columnspan=2)
 
+    global LabelAjoutRencontre
+    LabelAjoutRencontre = tk.Label(frameAdmin, text="Ajouter Une Rencontre", font=("Arial", 20), bg="#87CEFA", fg="white")
+    LabelAjoutRencontre.grid(row=2, column=5)
 
-#Récuperation identité
-User = "Admin"
+    #Récuperation identité
+    global User
+    User = "Admin"
 
-LabelUserAdmin = tk.Label(frameAdmin, text=User, font=("Arial", 15), bg="#87CEFA", fg="white")
-LabelUserAdmin.grid(row=0, column=0)
+    global LabelUserAdmin
+    LabelUserAdmin = tk.Label(frameAdmin, text=User, font=("Arial", 15), bg="#87CEFA", fg="white")
+    LabelUserAdmin.grid(row=0, column=0)
 
-## Rencontre
-#feed + affichage des rencontres
-rencontreAdmin = admin.rencontre().rencontre
-i=0
-for i in range(len(rencontreAdmin)):
-    r = donnees(json.dumps(rencontreAdmin[i]))
-    valuesRencontreAdmin = r.nom + " le " + r.date + " à " + r.lieu
+    ## Rencontre
+    #feed + affichage des rencontres
+    global rencontreAdmin
+    rencontreAdmin = admin.rencontre().rencontre
+    for i in range(len(rencontreAdmin)):
+        r = donnees(json.dumps(rencontreAdmin[i]))
+        valuesRencontreAdmin = r.nom + " le " + r.date + " à " + r.lieu
 
-    labelRencontreAdmin = tk.Label(frameAdmin, text=valuesRencontreAdmin, font=("Arial", 15), bg="#87CEFA", fg="white")
-    labelRencontreAdmin.grid(row=i+3, column=1, columnspan=2)
+        labelRencontreAdmin = tk.Label(frameAdmin, text=valuesRencontreAdmin, font=("Arial", 15), bg="#87CEFA", fg="white")
+        labelRencontreAdmin.grid(row=i+3, column=0)
+        ButtonCancel = tk.Button(frameAdmin, text="Annulé", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:creationFramePari())
+        ButtonCancel.grid(row=i+3, column=1)
+        ButtonWinner = tk.Button(frameAdmin, text="Choisir un Vainqueur", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda: creationFrameVainqueur())
+        ButtonWinner.grid(row=i + 3, column=2)
 
-ButtonCancel = tk.Button(frameAdmin, text="Annulé", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda:raise_frame(framePari))
-ButtonCancel.grid(row=i+4, column=1)
-ButtonWinner = tk.Button(frameAdmin, text="Choisir un Vainqueur", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda: raise_frame(frameVainqueur))
-ButtonWinner.grid(row=i + 4, column=2)
+    raise_frame(frameAdmin)
 
 # =====================================================================
 # -------------------------Annulé Rencontre----------------------------
@@ -606,27 +786,36 @@ cancel = cancel()
 
 frameCancel = tk.Frame(root, bg="#87CEFA", bd=1)
 
-LabelTitleAnnulation = tk.Label(frameCancel, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
-LabelTitleAnnulation.grid(row=0, column=0)
+def creationFrameCancel():
+    global LabelTitleAnnulation
+    LabelTitleAnnulation = tk.Label(frameCancel, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
+    LabelTitleAnnulation.grid(row=0, column=0)
 
-RencontrePariAdmin = cancel.rencontre().rencontre
-nomRencontrePariAdmin = []
-idRencontrePariAdmin = []
-for rencontre in RencontrePariAdmin:
-    rencontre = donnees(json.dumps(rencontre))
-    nomRencontrePariAdmin.append(rencontre.nom)
-    idRencontrePariAdmin.append(rencontre.id)
+    global RencontrePariAdmin
+    RencontrePariAdmin = cancel.rencontre().rencontre
+    global nomRencontrePariAdmin
+    nomRencontrePariAdmin = []
+    global idRencontrePariAdmin
+    idRencontrePariAdmin = []
+    for rencontre in RencontrePariAdmin:
+        rencontre = donnees(json.dumps(rencontre))
+        nomRencontrePariAdmin.append(rencontre.nom)
+        idRencontrePariAdmin.append(rencontre.id)
 
-if idRencontrePariAdmin == []:
-    nomRencontrePariAdmin = [""]
-    idRencontrePariAdmin = [""]
-ComboboxRencontrePariAdmin = ttk.Combobox(frameCancel, values=nomRencontrePariAdmin, state="readonly")
-print(dict(ComboboxRencontrePariAdmin))
-ComboboxRencontrePariAdmin.current(0)
-ComboboxRencontrePariAdmin.grid(row=1, column=0)
+    if idRencontrePariAdmin == []:
+        nomRencontrePariAdmin = [""]
+        idRencontrePariAdmin = [""]
+    global ComboboxRencontrePariAdmin
+    ComboboxRencontrePariAdmin = ttk.Combobox(frameCancel, values=nomRencontrePariAdmin, state="readonly")
+    print(dict(ComboboxRencontrePariAdmin))
+    ComboboxRencontrePariAdmin.current(0)
+    ComboboxRencontrePariAdmin.grid(row=1, column=0)
 
-ButtonAnnuleRencontre = tk.Button(frameCancel, text="Annuler", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda : cancel.annule())
-ButtonAnnuleRencontre.grid(row=2, column=0)
+    global ButtonAnnuleRencontre
+    ButtonAnnuleRencontre = tk.Button(frameCancel, text="Annuler", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda : cancel.annule())
+    ButtonAnnuleRencontre.grid(row=2, column=0)
+
+    raise_frame(frameCancel)
 
 #======================================================================
 #---------------------------Ajout Rencontre----------------------------
@@ -727,89 +916,116 @@ ajout = Rencontre()
 frameAjout = tk.Frame(root, bg="#87CEFA", bd=1)
 ## Ajout d'une rencontre
 #Nom rencontre
+def creationFrameAjout():
+    global LabelTitleRencontre
+    LabelTitleRencontre = tk.Label(frameAjout, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
+    LabelTitleRencontre.grid(row=0, column=5)
 
-LabelTitleRencontre = tk.Label(frameAjout, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
-LabelTitleRencontre.grid(row=0, column=5)
+    global LabelNomRencontre
+    LabelNomRencontre = tk.Label(frameAjout, text="Nom de la Rencontre :", font=("Arial", 15), bg="#87CEFA", fg="white")
+    LabelNomRencontre.grid(row=3, column=4)
+    global EntryNomRencontre
+    EntryNomRencontre = tk.Entry(frameAjout, font=("Arial", 15), bg="#87CEFA", fg="white")
+    EntryNomRencontre.grid(row=4, column=4)
 
-LabelNomRencontre = tk.Label(frameAjout, text="Nom de la Rencontre :", font=("Arial", 15), bg="#87CEFA", fg="white")
-LabelNomRencontre.grid(row=3, column=4)
-EntryNomRencontre = tk.Entry(frameAjout, font=("Arial", 15), bg="#87CEFA", fg="white")
-EntryNomRencontre.grid(row=4, column=4)
+    #Date Rencontre
+    global LabelDateRencontre
+    LabelDateRencontre = tk.Label(frameAjout, text="Date de la Rencontre :", font=("Arial", 15), bg="#87CEFA", fg="white")
+    LabelDateRencontre.grid(row=5, column=4)
+    global EntryDateRencontre
+    EntryDateRencontre = tk.Entry(frameAjout, font=("Arial", 15), bg="#87CEFA", fg="white")
+    EntryDateRencontre.grid(row=6, column=4)
 
-#Date Rencontre
-LabelDateRencontre = tk.Label(frameAjout, text="Date de la Rencontre :", font=("Arial", 15), bg="#87CEFA", fg="white")
-LabelDateRencontre.grid(row=5, column=4)
-EntryDateRencontre = tk.Entry(frameAjout, font=("Arial", 15), bg="#87CEFA", fg="white")
-EntryDateRencontre.grid(row=6, column=4)
+    #Lieu Rencontre
+    global LabelLieuRencontre
+    LabelLieuRencontre = tk.Label(frameAjout, text="Lieux de la Rencontre :", font=("Arial", 15), bg="#87CEFA", fg="white")
+    LabelLieuRencontre.grid(row=7, column=4)
+    global EntryLieuRencontre
+    EntryLieuRencontre = tk.Entry(frameAjout, font=("Arial", 15), bg="#87CEFA", fg="white")
+    EntryLieuRencontre.grid(row=8, column=4)
 
-#Lieu Rencontre
-LabelLieuRencontre = tk.Label(frameAjout, text="Lieux de la Rencontre :", font=("Arial", 15), bg="#87CEFA", fg="white")
-LabelLieuRencontre.grid(row=7, column=4)
-EntryLieuRencontre = tk.Entry(frameAjout, font=("Arial", 15), bg="#87CEFA", fg="white")
-EntryLieuRencontre.grid(row=8, column=4)
+    #Challenger
+    global valeurChallengerAdmin
+    valeurChallengerAdmin = ajout.challenger().challengers
+    global nomChallAdmin
+    nomChallAdmin = []
+    global idChallengerAdmin
+    idChallengerAdmin = []
+    for challenger in valeurChallengerAdmin:
+        challenger = donnees(json.dumps(challenger))
+        nomChallAdmin.append(challenger.nom)
+        idChallengerAdmin.append(challenger.id)
 
-#Challenger
-valeurChallengerAdmin = ajout.challenger().challengers
-nomChallAdmin = []
-idChallengerAdmin = []
-for challenger in valeurChallengerAdmin:
-    challenger = donnees(json.dumps(challenger))
-    nomChallAdmin.append(challenger.nom)
-    idChallengerAdmin.append(challenger.id)
+    global LabelChoixChallenger1
+    LabelChoixChallenger1 = ttk.Combobox(frameAjout, values=nomChallAdmin, state="readonly")
+    print(dict(LabelChoixChallenger1))
+    LabelChoixChallenger1.current(0)
+    LabelChoixChallenger1.grid(row=9, column=4)
 
-LabelChoixChallenger1 = ttk.Combobox(frameAjout, values=nomChallAdmin, state="readonly")
-print(dict(LabelChoixChallenger1))
-LabelChoixChallenger1.current(0)
-LabelChoixChallenger1.grid(row=9, column=4)
+    global LabelCoteChallenger1
+    LabelCoteChallenger1 = tk.Label(frameAjout, text="Cote du challenger :", font=("Arial", 17), bg="#87CEFA", fg="white")
+    LabelCoteChallenger1.grid(row=10, column=4)
 
-LabelCoteChallenger1 = tk.Label(frameAjout, text="Cote du challenger :", font=("Arial", 17), bg="#87CEFA", fg="white")
-LabelCoteChallenger1.grid(row=10, column=4)
+    global EntryCoteChallenger1
+    EntryCoteChallenger1 = tk.Entry(frameAjout, font=("Arial", 15), bg="#87CEFA", fg="white")
+    EntryCoteChallenger1.grid(row=11, column=4)
 
-EntryCoteChallenger1 = tk.Entry(frameAjout, font=("Arial", 15), bg="#87CEFA", fg="white")
-EntryCoteChallenger1.grid(row=11, column=4)
+    global LabelVs
+    LabelVs = tk.Label(frameAjout, text="VS", font=("Arial", 17), bg="#87CEFA", fg="white")
+    LabelVs.grid(row=9, column=5)
 
-LabelVs = tk.Label(frameAjout, text="VS", font=("Arial", 17), bg="#87CEFA", fg="white")
-LabelVs.grid(row=9, column=5)
+    global valeurChallenger2Admin
+    valeurChallenger2Admin = ajout.challenger().challengers
+    global nomChallAdmin2
+    nomChallAdmin2 = []
+    global idChallengerAdmin2
+    idChallengerAdmin2 = []
+    for challenger in valeurChallenger2Admin:
+        challenger = donnees(json.dumps(challenger))
+        nomChallAdmin2.append(challenger.nom)
+        idChallengerAdmin2.append(challenger.id)
 
-valeurChallenger2Admin = ajout.challenger().challengers
-nomChallAdmin2 = []
-idChallengerAdmin2 = []
-for challenger in valeurChallenger2Admin:
-    challenger = donnees(json.dumps(challenger))
-    nomChallAdmin2.append(challenger.nom)
-    idChallengerAdmin2.append(challenger.id)
+    global LabelChoixChallenger2
+    LabelChoixChallenger2 = ttk.Combobox(frameAjout, values=nomChallAdmin2, state="readonly")
+    print(dict(LabelChoixChallenger2))
+    LabelChoixChallenger2.current(0)
+    LabelChoixChallenger2.grid(row=9, column=6)
 
-LabelChoixChallenger2 = ttk.Combobox(frameAjout, values=nomChallAdmin2, state="readonly")
-print(dict(LabelChoixChallenger2))
-LabelChoixChallenger2.current(0)
-LabelChoixChallenger2.grid(row=9, column=6)
+    global LabelCoteChallenger2
+    LabelCoteChallenger2 = tk.Label(frameAjout, text="Cote du challenger :", font=("Arial", 17), bg="#87CEFA", fg="white")
+    LabelCoteChallenger2.grid(row=10, column=6)
 
-LabelCoteChallenger2 = tk.Label(frameAjout, text="Cote du challenger :", font=("Arial", 17), bg="#87CEFA", fg="white")
-LabelCoteChallenger2.grid(row=10, column=6)
+    global EntryCoteChallenger2
+    EntryCoteChallenger2 = tk.Entry(frameAjout, font=("Arial", 15), bg="#87CEFA", fg="white")
+    EntryCoteChallenger2.grid(row=11, column=6)
 
-EntryCoteChallenger2 = tk.Entry(frameAjout, font=("Arial", 15), bg="#87CEFA", fg="white")
-EntryCoteChallenger2.grid(row=11, column=6)
+    #Discipline
+    global LabelDiscipline
+    LabelDiscipline = tk.Label(frameAjout, text="Choix de la Discipline :", font=("Arial", 15), bg="#87CEFA", fg="white")
+    LabelDiscipline.grid(row=4, column=6)
+    global valueDiscipline
+    valueDiscipline = ajout.discipline().disciplines
+    global Discipline
+    Discipline = []
+    global idDiscipline
+    idDiscipline = []
+    for discipline in valueDiscipline:
+        discipline = donnees(json.dumps(discipline))
+        Discipline.append(discipline.nom)
+        idDiscipline.append(discipline.id)
 
-#Discipline
-LabelDiscipline = tk.Label(frameAjout, text="Choix de la Discipline :", font=("Arial", 15), bg="#87CEFA", fg="white")
-LabelDiscipline.grid(row=4, column=6)
-valueDiscipline = ajout.discipline().disciplines
-Discipline = []
-idDiscipline = []
-for discipline in valueDiscipline:
-    discipline = donnees(json.dumps(discipline))
-    Discipline.append(discipline.nom)
-    idDiscipline.append(discipline.id)
-
-LabelChoixDiscipline = ttk.Combobox(frameAjout, values=Discipline, state="readonly")
-print(dict(LabelChoixDiscipline))
-LabelChoixDiscipline.current(0)
-LabelChoixDiscipline.grid(row=5, column=6)
+    global LabelChoixDiscipline
+    LabelChoixDiscipline = ttk.Combobox(frameAjout, values=Discipline, state="readonly")
+    print(dict(LabelChoixDiscipline))
+    LabelChoixDiscipline.current(0)
+    LabelChoixDiscipline.grid(row=5, column=6)
 
 
-#bouton ajout
-ButtonAjoutRencontre = tk.Button(frameAjout, text="Ajouter", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda : ajout.ajoutRencontre())
-ButtonAjoutRencontre.grid(row=12, column=5)
+    #bouton ajout
+    ButtonAjoutRencontre = tk.Button(frameAjout, text="Ajouter", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda : ajout.ajoutRencontre())
+    ButtonAjoutRencontre.grid(row=12, column=5)
+
+    raise_frame(frameAjout)
 
 #======================================================================
 #---------------------------Choix Vainqueur----------------------------
@@ -857,30 +1073,33 @@ class Vainqueur:
 
 vainqueur = Vainqueur()
 frameVainqueur= tk.Frame(root, bg="#87CEFA", bd=1)
-LabelTitleVainqueur = tk.Label(frameVainqueur, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
-LabelTitleVainqueur.grid(row=0, column=0)
+def creationFrameVainqueur():
+    LabelTitleVainqueur = tk.Label(frameVainqueur, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
+    LabelTitleVainqueur.grid(row=0, column=0)
 
-#Choix Rencontre
-LabelRencontreVainqueur = tk.Label(frameVainqueur, text="Choisir un Vainqueur", font=("Arial", 15), bg="#87CEFA", fg="white")
-LabelRencontreVainqueur.grid(row=1, column=0)
+    #Choix Rencontre
+    LabelRencontreVainqueur = tk.Label(frameVainqueur, text="Choisir un Vainqueur", font=("Arial", 15), bg="#87CEFA", fg="white")
+    LabelRencontreVainqueur.grid(row=1, column=0)
 
-#Choix Vainqueur
-Challengers = ajout.challenger().challengers
-nomVainqueur = []
-idVainqueur = []
-for challenger in Challengers:
-    challenger = donnees(json.dumps(challenger))
-    nomVainqueur.append(challenger.nom)
-    idVainqueur.append(challenger.id)
+    #Choix Vainqueur
+    Challengers = ajout.challenger().challengers
+    nomVainqueur = []
+    idVainqueur = []
+    for challenger in Challengers:
+        challenger = donnees(json.dumps(challenger))
+        nomVainqueur.append(challenger.nom)
+        idVainqueur.append(challenger.id)
 
-ComboboxVainqueur = ttk.Combobox(frameVainqueur, values=nomVainqueur, state="readonly")
-print(dict(ComboboxVainqueur))
-ComboboxVainqueur.current(0)
-ComboboxVainqueur.grid(row=2, column=0)
+    ComboboxVainqueur = ttk.Combobox(frameVainqueur, values=nomVainqueur, state="readonly")
+    print(dict(ComboboxVainqueur))
+    ComboboxVainqueur.current(0)
+    ComboboxVainqueur.grid(row=2, column=0)
 
-#Bouton
-btnVainqueur = tk.Button(frameVainqueur, text="Ajouter", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda :vainqueur.envoiVainqueur())
-btnVainqueur.grid(row=3, column=0)
+    #Bouton
+    btnVainqueur = tk.Button(frameVainqueur, text="Ajouter", font=("Arial", 15), bg="white", fg="#87CEFA", command=lambda :vainqueur.envoiVainqueur())
+    btnVainqueur.grid(row=3, column=0)
+
+    raise_frame(frameVainqueur)
 
 #======================================================================
 #-------------Assemblage des frames, génération de la page-------------
@@ -888,6 +1107,16 @@ btnVainqueur.grid(row=3, column=0)
 
 for frame in (frameLogin, frameUser, frameCompte, framePari, frameAdmin, frameVainqueur, frameRegister, frameAjout, frameCancel):
     frame.grid(row=0, column=0, sticky='news')
+
+#======================================================================
+#-----------------------fonction de gestion----------------------------
+#======================================================================
+def deconnexion():
+    ut.destructDataUser()
+    EntryLogin.delete(0, 'end')
+    EntryPassword.delete(0, 'end')
+    creationMenuDefault()
+    raise_frame(frameLogin)
 
 raise_frame(frameLogin)
 root.mainloop()
