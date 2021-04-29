@@ -86,12 +86,9 @@ while True:
 						cur.execute("INSERT INTO PARIEUR (idParieur) VALUES ("+str(cur.lastrowid)+")")
 						conn.commit()
 						print('inscription success')
-						message_client = {
-									"idUtilisateur" : cur.lastrowid,
-									"login" : str(donnees.login),
-									"role" : 'parieur'
-								 }
-						message_client = json.dumps(message_client)
+						message_client = 'success'
+						
+						print(message_client)
 				n = client.send(message_client.encode("ascii"))
 			except:
 				print('inscription failed')
@@ -251,10 +248,10 @@ while True:
 				client.send(message_client.encode('ascii'))
 		elif(donnees.action == 'afficher challenger'):
 			try:
-				cur.execute("SELECT c.idChallenger, c.nom, c.pays FROM CHALLENGER c INNER JOIN RENCONTRE_CHALLENGER rc ON rc.idChallenger = c.idChallenger WHERE rc.idRencontre = "+ str(donnees.rencontre))
+				cur.execute("SELECT c.idChallenger, c.nom, c.pays, rc.cote FROM CHALLENGER c INNER JOIN RENCONTRE_CHALLENGER rc ON rc.idChallenger = c.idChallenger WHERE rc.idRencontre = "+ str(donnees.rencontre))
 				resultat = []
-				for(idChallenger, nom, pays) in cur:
-					resultat.append({"id" : idChallenger, "nom" : nom, "pays" : pays})
+				for(idChallenger, nom, pays, cote) in cur:
+					resultat.append({"id" : idChallenger, "nom" : nom, "pays" : pays, "cote" : cote})
 				reponse = {
 						"challengers" : resultat
 				  	  }
@@ -265,7 +262,7 @@ while True:
 				client.send(message_client.encode('ascii'))
 		elif(donnees.action == "afficher all challenger"):
 			try:
-				cur.execute("SELECT idChallenger, nom FROM CHALLENGER")
+				cur.execute("SELECT idChallenger, nom FROM CHALLENGER WHERE idDiscipline = "+str(donnees.discipline))
 				resultat = []
 				for (idChallenger, nom) in cur:
 					resultat.append({"id" : idChallenger, "nom": nom})
@@ -273,6 +270,7 @@ while True:
 								"challengers" : resultat
 							}
 				print('envoi de la liste des challengers success')
+				print(message_client)
 				n = client.send(json.dumps(message_client).encode("ascii"))
 			except:
 				print('envoi de la liste des challengers failed')
@@ -296,7 +294,7 @@ while True:
 		elif(donnees.action == "choisir vainqueur"):
 			try:
 				cur.execute("UPDATE RENCONTRE SET gagnant = "+ str(donnees.challenger)+ ", termine = 1 WHERE idRencontre = " + str(donnees.rencontre))
-				cur.execute("UPDATE PARI p INNER JOIN RENCONTRE_PARI rp ON p.idPari = rp.idPari INNER JOIN PARIEUR pr ON p.idParieur = pr.idParieur SET p.statut = CASE WHEN p.idChallenger = "+ str(donnees.challenger)+" THEN 'gagné' ELSE 'perdu'END,  p.resultat = CASE WHEN p.idChallenger = "+str(donnees.challenger)+" p.gainPotentiel ELSE 0 - p.mise END, pr.porteMonnaie = CASE WHEN p.idChallenger = "+str(donnees.challenger)+" THEN pr.porteMonnaie + mise + p.gainPotentiel  ELSE pr.porteMonnaie END WHERE rp.idRencontre = " + str(donnees.rencontre))
+				cur.execute("UPDATE PARI p INNER JOIN RENCONTRE_PARI rp ON p.idPari = rp.idPari INNER JOIN PARIEUR pr ON p.idParieur = pr.idParieur SET p.statut = CASE WHEN p.idChallenger = "+ str(donnees.challenger)+" THEN 'gagné' ELSE 'perdu'END,  p.resultat = CASE WHEN p.idChallenger = "+str(donnees.challenger)+" THEN p.gainPotentiel ELSE 0 - p.mise END, pr.porteMonnaie = CASE WHEN p.idChallenger = "+str(donnees.challenger)+" THEN pr.porteMonnaie + mise + p.gainPotentiel  ELSE pr.porteMonnaie END WHERE rp.idRencontre = " + str(donnees.rencontre))
 				conn.commit()
 				print('enregistrement du vainqueur success')
 				message_client = 'success'
