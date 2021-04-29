@@ -155,14 +155,7 @@ def register():
         tk.messagebox.showwarning(title="Erreur", message="Cette identifiant existe déjà.")
     else:
         tk.messagebox.showinfo(title="Succès !", message="Votre Compte à bien été créé")
-        data = donnees(data)
-        ut.setDataUser(data.idUtilisateur, data.login, data.role)
-        if (ut.role == "parieur"):
-            creationFrameUtilisateur()
-            creationMenuUser()
-        elif (ut.role == "admin"):
-            creationFrameAdmin()
-            creationMenuAdmin()
+        raise_frame(frameLogin)
 
 frameRegister = tk.Frame(root, bg="#87CEFA", bd=1)
 
@@ -486,7 +479,7 @@ def creationFramePari():
         global LabelCotePariVariable
         LabelCotePariVariable = tk.Label(framePari, text=cote, font=("Arial", 15), bg="#87CEFA", fg="white")
         LabelCotePariVariable.grid(row=4, column=1)
-        
+
         LabelChoixVainqueur.bind("<<ComboboxSelected>>", rechargeCote)
     ComboboxRencontrePari.bind("<<ComboboxSelected>>", rechargeChallenger)
 
@@ -831,6 +824,8 @@ class cancel:
         print(rq)
         if ('success' in data.decode("ascii")):
             tk.messagebox.showinfo(title="Succès", message="Annulation de la rencontre effectué avec succès.")
+            reloadFrame()
+            creationFrameAdmin()
         elif ('fail' in data.decode("ascii")):
             tk.messagebox.showwarning(title="Erreur", message="Echec de l'annulation de la rencontre.")
 
@@ -953,6 +948,8 @@ class Rencontre:
                 print(rq)
                 if ('success' in data.decode("ascii")):
                     tk.messagebox.showinfo(title="Succès", message="Ajout de la rencontre effectué avec succès.")
+                    reloadFrame()
+                    creationFrameAdmin()
                 elif ('fail' in data.decode("ascii")):
                     tk.messagebox.showwarning(title="Erreur", message="Echec de l'ajout de la rencontre.")
 ajout = Rencontre()
@@ -1279,6 +1276,7 @@ def creationFrameVainqueur():
 
     raise_frame(frameVainqueur)
 
+
 #======================================================================
 #-------------Assemblage des frames, génération de la page-------------
 #======================================================================
@@ -1289,12 +1287,39 @@ for frame in (frameLogin, frameUser, frameCompte, framePari, frameAdmin, frameVa
 #======================================================================
 #-----------------------fonction de gestion----------------------------
 #======================================================================
+def reloadFrame():
+    global frameUser
+    global frameCompte
+    global framePari
+    global frameAdmin
+    global frameVainqueur
+    global frameRegister
+    global frameAjout
+    global frameCancel
+    for frame in (
+    frameUser, frameCompte, framePari, frameAdmin, frameVainqueur, frameRegister, frameAjout, frameCancel):
+        frame.destroy()
+    frameUser = tk.Frame(root, bg="#87CEFA", bd=1)
+    frameCompte = tk.Frame(root, bg="#87CEFA", bd=1)
+    framePari = tk.Frame(root, bg="#87CEFA", bd=1)
+    frameAdmin = tk.Frame(root, bg="#87CEFA", bd=1)
+    frameVainqueur = tk.Frame(root, bg="#87CEFA", bd=1)
+    frameRegister = tk.Frame(root, bg="#87CEFA", bd=1)
+    frameAjout = tk.Frame(root, bg="#87CEFA", bd=1)
+    frameCancel = tk.Frame(root, bg="#87CEFA", bd=1)
+    for frame in (
+    frameLogin, frameUser, frameCompte, framePari, frameAdmin, frameVainqueur, frameRegister, frameAjout, frameCancel):
+        frame.grid(row=0, column=0, sticky='news')
+
 def deconnexion():
     ut.destructDataUser()
     EntryLogin.delete(0, 'end')
     EntryPassword.delete(0, 'end')
+    reloadFrame()
     creationMenuDefault()
     raise_frame(frameLogin)
+
+
 
 raise_frame(frameLogin)
 root.mainloop()
