@@ -1187,6 +1187,12 @@ class Vainqueur:
         data = s.recv(1024)
         s.close()
         print(repr(data), 'Reçue')
+        if('success' in repr(data)):
+            tk.messagebox.showinfo(title="Choix du vainqueur", message="Désignation du vainqueur réalisé avec succès !")
+            reloadFrame()
+            creationFrameAdmin()
+        else:
+            tk.messagebox.showwarning(title="Choix du vainqueur", message="Erreur lors de la désignation du vainqueur")
         print(rq)
         return data
 
