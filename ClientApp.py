@@ -17,8 +17,9 @@ def raise_frame(frame):
 root = tk.Tk()
 
 root.title("BetApp")
-root.geometry("1280x720")
-root.minsize(480,360)
+root.geometry("1380x720")
+root.minsize(1380,720)
+root.maxsize(1380,720)
 #Logo
 root.iconbitmap("logo.ico")
 root.config(background="#87CEFA")
@@ -99,7 +100,7 @@ LabelTitleAccueil.grid()
 
 #Initialisation du formulaire de Login
 
-LabelLogin = tk.Label(frameLogin, text="Login", font=("Arial", 20), bg="#87CEFA", fg="white")
+LabelLogin = tk.Label(frameLogin, text="Login", font=("Arial", 20), bg="#87CEFA", fg="white", padx="650")
 LabelLogin.grid()
 
 
@@ -165,7 +166,7 @@ def creationFrameRegister():
     LabelTitleRegister.grid(row=0, column=0)
     #Initialisation du formulaire de Register
     global LabelRegister
-    LabelRegister = tk.Label(frameRegister, text="Identifiant", font=("Arial", 20), bg="#87CEFA", fg="white")
+    LabelRegister = tk.Label(frameRegister, text="Identifiant", font=("Arial", 20), bg="#87CEFA", fg="white", padx="624")
     LabelRegister.grid(row=1, column=0)
 
     global EntryRegister
@@ -418,7 +419,7 @@ framePari = tk.Frame(root, bg="#87CEFA", bd=1)
 def creationFramePari():
     #Initialisation des titre
     global LabelTitrePari
-    LabelTitrePari = tk.Label(framePari, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
+    LabelTitrePari = tk.Label(framePari, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white", padx="620")
     LabelTitrePari.grid(row=0, column=0, columnspan=2)
 
     global LabelTitreRencontre
@@ -643,7 +644,7 @@ frameCompte = tk.Frame(root, bg="#87CEFA", bd=1)
 def creationFrameCompte():
     #Initialisation des titre
     global LabelTitreCompte
-    LabelTitreCompte = tk.Label(frameCompte, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
+    LabelTitreCompte = tk.Label(frameCompte, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white", padx="380")
     LabelTitreCompte.grid(row=0, column=2)
 
     global LabelStatistique
@@ -750,7 +751,7 @@ frameAdmin = tk.Frame(root, bg="#87CEFA", bd=1)
 def creationFrameAdmin():
     #Initialisation des titre
     global LabelTitleAdmin
-    LabelTitleAdmin = tk.Label(frameAdmin, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
+    LabelTitleAdmin = tk.Label(frameAdmin, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white", padx="580")
     LabelTitleAdmin.grid(row=0, column=1, columnspan=2)
 
     global LabelTitleRencontreAdmin
@@ -835,7 +836,7 @@ frameCancel = tk.Frame(root, bg="#87CEFA", bd=1)
 
 def creationFrameCancel():
     global LabelTitleAnnulation
-    LabelTitleAnnulation = tk.Label(frameCancel, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
+    LabelTitleAnnulation = tk.Label(frameCancel, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white", padx="620")
     LabelTitleAnnulation.grid(row=0, column=0)
 
     global RencontrePariAdmin
@@ -963,7 +964,7 @@ def creationFrameAjout():
     LabelTitleRencontre.grid(row=0, column=5)
 
     global LabelNomRencontre
-    LabelNomRencontre = tk.Label(frameAjout, text="Nom de la Rencontre :", font=("Arial", 15), bg="#87CEFA", fg="white")
+    LabelNomRencontre = tk.Label(frameAjout, text="Nom de la Rencontre :", font=("Arial", 15), bg="#87CEFA", fg="white", padx="200")
     LabelNomRencontre.grid(row=3, column=4)
     global EntryNomRencontre
     EntryNomRencontre = tk.Entry(frameAjout, font=("Arial", 15), bg="#87CEFA", fg="white")
@@ -1045,7 +1046,7 @@ def creationFrameAjout():
     # Discipline
     global LabelDiscipline
     LabelDiscipline = tk.Label(frameAjout, text="Choix de la Discipline :", font=("Arial", 15), bg="#87CEFA",
-                               fg="white")
+                               fg="white", padx="220")
     LabelDiscipline.grid(row=4, column=6)
     global valueDiscipline
     valueDiscipline = ajout.discipline().disciplines
@@ -1201,7 +1202,7 @@ vainqueur = Vainqueur()
 frameVainqueur= tk.Frame(root, bg="#87CEFA", bd=1)
 def creationFrameVainqueur():
     global LabelTitleVainqueur
-    LabelTitleVainqueur = tk.Label(frameVainqueur, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white")
+    LabelTitleVainqueur = tk.Label(frameVainqueur, text="BetApp", font=("Arial", 40), bg="#87CEFA", fg="white", padx="620")
     LabelTitleVainqueur.grid(row=0, column=0)
 
     #Choix Rencontre
